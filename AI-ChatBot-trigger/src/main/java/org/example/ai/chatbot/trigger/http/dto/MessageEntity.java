@@ -16,8 +16,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MessageEntity {
 
-    private String role;
-    private String content;
-    private String name;
+    public String role;
+    public String content;
+    public String name;
 
 }

@@ -1,34 +1,29 @@
 package org.example.ai.chatbot.trigger.http;
 
-
-import cn.bugstack.chatglm.model.ChatCompletionRequest;
+import cn.bugstack.chatglm.model.*;
 import cn.bugstack.chatglm.session.OpenAiSession;
+import okhttp3.Response;
 import org.example.ai.chatbot.trigger.http.dto.ChatGPTRequestDTO;
-import org.example.ai.chatbot.types.common.Constants;
+import org.example.ai.chatbot.trigger.http.dto.MessageEntity;
 import org.example.ai.chatbot.types.exception.ChatGPTException;
 
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.sse.EventSource;
 import okhttp3.sse.EventSourceListener;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.message.Message;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.stream.Collectors;
+import java.util.concurrent.TimeUnit;
 
-/**
- * @author Fuzhengwei bugstack.cn @小傅哥
- * @description
- * @create 2023-07-23 08:46
- */
+
 @Slf4j
 @RestController()
 @CrossOrigin("*")
@@ -40,87 +35,101 @@ public class ChatGPTAIServiceControllerOld {
 
     @Resource
     private ThreadPoolExecutor threadPoolExecutor;
+
+    @Resource
+    private Map<String,Model> modelMap;
+
     /**
-     * 流式问题，ChatGPT 请求接口
-     * <p>
-     * curl -X POST \
-     * http://localhost:8080/api/v1/chat/completions \
-     * -H 'Content-Type: application/json;charset=utf-8' \
-     * -H 'Authorization: b8b6' \
-     * -d '{
-     * "messages": [
-     * {
-     * "content": "写一个java冒泡排序",
-     * "role": "user"
-     * }
-     * ],
-     * "model": "gpt-3.5-turbo"
-     * }'
+     * Streaming problem, ChatGPT request interface
+     *
      */
     @RequestMapping(value = "chat/completions", method = RequestMethod.POST)
     public ResponseBodyEmitter completionsStream(@RequestBody ChatGPTRequestDTO request, @RequestHeader("Authorization") String token, HttpServletResponse response) {
-        log.info("流式问答请求开始，使用模型：{} 请求信息：{}", request.getModel(), JSON.toJSONString(request.getMessages()));
+        log.info("Stream request started with model: {} Request details: {}", request.getModel(), JSON.toJSONString(request.getMessages()));
+
         try {
-            // 1. 基础配置；流式输出、编码、禁用缓存
+            // Basic configuration: streaming, encoding, disabling cache
             response.setContentType("text/event-stream");
             response.setCharacterEncoding("UTF-8");
             response.setHeader("Cache-Control", "no-cache");
 
-            if (!token.equals("b8b6")) throw new RuntimeException("token err!");
+            if (!token.equals("a8b8")) throw new RuntimeException("token err!");
 
-            // 2. 异步处理 HTTP 响应处理类
             ResponseBodyEmitter emitter = new ResponseBodyEmitter(3 * 60 * 1000L);
+
             emitter.onCompletion(() -> {
-                log.info("流式问答请求完成，使用模型：{}", request.getModel());
+                log.info("Stream request completed with model: {}", request.getModel());
             });
-            emitter.onError(throwable -> log.error("流式问答请求疫情，使用模型：{}", request.getModel(), throwable));
+            emitter.onError(throwable -> {
+                log.error("Stream request error with model: {}", request.getModel(), throwable);
+            });
 
-            // 3.1 构建参数
-            List<Message> messages = request.getMessages().stream()
-                    .map(entity -> Message.builder()
-                            .role(Constants.Role.valueOf(entity.getRole().toUpperCase()))
-                            .content(entity.getContent())
-                            .name(entity.getName())
-                            .build())
-                    .collect(Collectors.toList());
+            // Initialize chatRequest
+            ChatCompletionRequest chatRequest = new ChatCompletionRequest();
+            chatRequest.setModel(modelMap.get(request.getModel())); // todo Set the model from the DTO
+            chatRequest.setIsCompatible(false);
 
-            ChatCompletionRequest chatCompletion = ChatCompletionRequest
-                    .builder()
-                    .stream(true)
-                    .messages(messages)
-                    .model(ChatCompletionRequest.Model.GPT_3_5_TURBO.getCode())
-                    .build();
+            // GLM-3-turbo and GLM-4, released in January 2024, support functions, knowledge bases, and networking features
+            chatRequest.setTools(new ArrayList<ChatCompletionRequest.Tool>() {
+                private static final long serialVersionUID = -7988151926241837899L;
 
-            // 3.2 请求应答
-            openAiSession.chatCompletions(chatCompletion, new EventSourceListener() {
-                @Override
-                public void onEvent(@NotNull EventSource eventSource, @Nullable String id, @Nullable String type, @NotNull String data) {
-                    ChatCompletionResponse chatCompletionResponse = JSON.parseObject(data, ChatCompletionResponse.class);
-                    List<ChatChoice> choices = chatCompletionResponse.getChoices();
-                    for (ChatChoice chatChoice : choices) {
-                        Message delta = chatChoice.getDelta();
-                        if (Constants.Role.ASSISTANT.getCode().equals(delta.getRole())) continue;
-
-                        // 应答完成
-                        String finishReason = chatChoice.getFinishReason();
-                        if (StringUtils.isNoneBlank(finishReason) && "stop".equals(finishReason)) {
-                            emitter.complete();
-                            break;
-                        }
-
-                        // 发送信息
-                        try {
-                            emitter.send(delta.getContent());
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-
+                {
+                    add(ChatCompletionRequest.Tool.builder()
+                            .type(ChatCompletionRequest.Tool.Type.web_search)
+                            .webSearch(ChatCompletionRequest.Tool.WebSearch.builder().enable(true).searchQuery("user").build())
+                            .build());
                 }
             });
+
+            chatRequest.setPrompt(new ArrayList<ChatCompletionRequest.Prompt>() {
+                private static final long serialVersionUID = -7988151926241837899L;
+
+                {
+                    add(ChatCompletionRequest.Prompt.builder()
+                            .role(Role.user.getCode())
+                            .content(request.getMessages().stream()
+                                    .map(MessageEntity::getContent)
+                                    .reduce(String::concat)
+                                    .get())
+                            .build());
+                }
+            });
+
+            // Request processing
+            openAiSession.completions(chatRequest, new EventSourceListener() {
+                @Override
+                public void onEvent(EventSource eventSource, @Nullable String id, @Nullable String type, String data) {
+                    if ("[DONE]".equals(data)) {
+                        log.info("[Output complete] Tokens {}", JSON.toJSONString(data));
+                        return;
+                    }
+
+                    ChatCompletionResponse response = JSON.parseObject(data, ChatCompletionResponse.class);
+                    log.info("Test result: {}", JSON.toJSONString(response));
+                    try {
+                        emitter.send(response.getData() != null ? response.getData() : "\n");
+                        TimeUnit.MILLISECONDS.sleep(10);
+                    } catch (IOException | InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
+                @Override
+                public void onClosed(EventSource eventSource) {
+                    log.info("Conversation complete");
+                    emitter.complete();
+                }
+
+                @Override
+                public void onFailure(EventSource eventSource, @Nullable Throwable t, @Nullable Response response) {
+                    log.error("Conversation failed", t);
+                    emitter.completeWithError(t);
+                }
+            });
+
             return emitter;
         } catch (Exception e) {
-            log.error("流式应答，请求模型：{} 发生异常", request.getModel(), e);
+            log.error("Stream response error for model: {}", request.getModel(), e);
             throw new ChatGPTException(e.getMessage());
         }
     }
@@ -147,5 +156,4 @@ public class ChatGPTAIServiceControllerOld {
 
         return emitter;
     }
-
 }

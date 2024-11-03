@@ -60,9 +60,8 @@ public class ApiTest {
 
         // 入参；模型、请求信息
         ChatCompletionRequest request = new ChatCompletionRequest();
-        request.setModel(Model.GLM_3_5_TURBO); // chatGLM_6b_SSE、chatglm_lite、chatglm_lite_32k、chatglm_std、chatglm_pro
-        request.setIncremental(false);
-        request.setIsCompatible(true); // 是否对返回结果数据做兼容，24年1月发布的 GLM_3_5_TURBO、GLM_4 模型，与之前的模型在返回结果上有差异。开启 true 可以做兼容。
+        request.setModel(Model.GLM_4); // chatGLM_6b_SSE、chatglm_lite、chatglm_lite_32k、chatglm_std、chatglm_pro
+        request.setIsCompatible(false); // 是否对返回结果数据做兼容，24年1月发布的 GLM_3_5_TURBO、GLM_4 模型，与之前的模型在返回结果上有差异。开启 true 可以做兼容。
         // 24年1月发布的 glm-3-turbo、glm-4 支持函数、知识库、联网功能
         request.setTools(new ArrayList<ChatCompletionRequest.Tool>() {
             private static final long serialVersionUID = -7988151926241837899L;
