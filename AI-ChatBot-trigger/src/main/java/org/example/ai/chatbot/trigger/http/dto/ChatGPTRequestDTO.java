@@ -1,6 +1,6 @@
 package org.example.ai.chatbot.trigger.http.dto;
 
-import org.example.ai.chatbot.types.enums.ChatGPTModel;
+import org.example.ai.chatbot.types.enums.ChatGLMModel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,7 +20,7 @@ import java.util.List;
 public class ChatGPTRequestDTO {
 
     /** 默认模型 */
-    private String model = ChatGPTModel.GPT_3_5_TURBO.getCode();
+    private String model = ChatGLMModel.GLM_3_5_TURBO.getCode();
 
     /** 问题描述 */
     private List<MessageEntity> messages;

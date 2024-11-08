@@ -10,10 +10,10 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum ChatGPTModel {
+public enum ChatGLMModel {
 
-    /** gpt-3.5-turbo */
-    GPT_3_5_TURBO("gpt-3.5-turbo"),
+    GLM_4("GLM_4"),
+    GLM_3_5_TURBO("GLM_3_5_TURBO")
 
     ;
     private final String code;

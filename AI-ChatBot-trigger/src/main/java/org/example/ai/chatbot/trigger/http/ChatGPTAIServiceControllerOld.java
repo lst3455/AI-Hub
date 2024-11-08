@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @RestController()
 @CrossOrigin("*")
-@RequestMapping("/api/v0/chatbot")
+@RequestMapping("/api/v0.5/chatbot")
 public class ChatGPTAIServiceControllerOld {
 
     @Resource

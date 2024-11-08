@@ -1,12 +1,12 @@
 package org.example.ai.chatbot.domain.openai.model.aggregates;
 
 import org.example.ai.chatbot.domain.openai.model.entity.MessageEntity;
-import org.example.ai.chatbot.types.enums.ChatGPTModel;
+import org.example.ai.chatbot.types.common.Constants;
+import org.example.ai.chatbot.types.enums.ChatGLMModel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.example.ai.chatbot.domain.openai.model.entity.MessageEntity;
 
 import java.util.List;
 
@@ -22,12 +22,18 @@ import java.util.List;
 public class ChatProcessAggregate {
 
     /** 验证信息 */
-    private String token;
+    private String openid;
     /** 默认模型 */
-    private String model = ChatGPTModel.GPT_3_5_TURBO.getCode();
+    private String model = ChatGLMModel.GLM_3_5_TURBO.getCode();
     /** 问题描述 */
     private List<MessageEntity> messages;
 
-
+    public boolean isWhiteList(String whiteListStr) {
+        String[] whiteList = whiteListStr.split(Constants.SPLIT);
+        for (String whiteOpenid : whiteList) {
+            if (whiteOpenid.equals(openid)) return true;
+        }
+        return false;
+    }
 
 }

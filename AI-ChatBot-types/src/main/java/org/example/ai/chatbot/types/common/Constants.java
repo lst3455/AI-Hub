@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
  */
 public class Constants {
 
+    public final static String SPLIT = ",";
+
     /**
      * Enum to represent different response codes and their associated messages.
      * Each code includes a unique identifier and an informational message.
