@@ -42,7 +42,7 @@ public class AccessLimitFilter implements ILogicFilter {
         int visitCount = visitCache.get(openid, () -> 0);
         if (visitCount < limitCount) {
             visitCache.put(openid, visitCount + 1);
-            log.info("rule engine - accessLimit - pass, visitCount:{}", visitCount);
+            log.info("rule engine - accessLimit - pass, visitCount:{}", visitCache.getIfPresent(openid));
             return RuleLogicEntity.<ChatProcessAggregate>builder()
                     .type(LogicCheckTypeVO.SUCCESS).data(chatProcess).build();
         }

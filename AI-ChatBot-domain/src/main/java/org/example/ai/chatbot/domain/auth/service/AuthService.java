@@ -1,6 +1,5 @@
 package org.example.ai.chatbot.domain.auth.service;
 
-
 import com.google.common.cache.Cache;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
@@ -12,8 +11,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 
 /**
- * @author Fuzhengwei bugstack.cn @小傅哥
- * @description 鉴权服务
+ * @description Authentication service
  * @create 2023-08-05 18:23
  */
 @Slf4j
@@ -25,22 +23,21 @@ public class AuthService extends AbstractAuthService {
 
     @Override
     protected AuthStateEntity checkCode(String code) {
-        // 获取验证码校验
+        // Validate the verification code
         String openId = codeCache.getIfPresent(code);
         if (StringUtils.isBlank(openId)){
-            log.info("鉴权，用户收入的验证码不存在 {}", code);
+            log.info("Authentication failed, the verification code entered by the user does not exist: {}", code);
             return AuthStateEntity.builder()
                     .code(AuthTypeVO.A0001.getCode())
                     .info(AuthTypeVO.A0001.getInfo())
                     .build();
         }
 
-
-        // 移除缓存Key值
+        // Invalidate the cached keys
         codeCache.invalidate(openId);
         codeCache.invalidate(code);
 
-        // 验证码校验成功
+        // Verification code is valid
         return AuthStateEntity.builder()
                 .code(AuthTypeVO.A0000.getCode())
                 .info(AuthTypeVO.A0000.getInfo())
@@ -58,5 +55,4 @@ public class AuthService extends AbstractAuthService {
         Claims claims = decode(token);
         return claims.get("openId").toString();
     }
-
 }

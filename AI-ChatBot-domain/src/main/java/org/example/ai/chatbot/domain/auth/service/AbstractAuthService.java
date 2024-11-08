@@ -37,7 +37,7 @@ public abstract class AbstractAuthService implements IAuthService {
      * @return An AuthStateEntity containing the result of the authentication and a token if successful.
      */
     @Override
-    public AuthStateEntity doLogin(String code) {
+    public AuthStateEntity doLogin(String code, String openId) {
 
         // 1. If the code is not a valid 4-digit numeric string, return an invalid code response.
         if (!code.matches("\\d{4}")) {
@@ -55,6 +55,13 @@ public abstract class AbstractAuthService implements IAuthService {
         }
 
         // 3. Generate and return a token upon successful authentication.
+        if (!authStateEntity.getOpenId().equals(openId)) {
+            log.info("Authentication failed, invalid verification code: {}", code);
+            return AuthStateEntity.builder()
+                    .code(AuthTypeVO.A0003.getCode())
+                    .info(AuthTypeVO.A0003.getInfo())
+                    .build();
+        }
         Map<String, Object> claims = new HashMap<>();
         claims.put("openId", authStateEntity.getOpenId());
         String token = encode(authStateEntity.getOpenId(), 7 * 24 * 60 * 60 * 1000, claims);

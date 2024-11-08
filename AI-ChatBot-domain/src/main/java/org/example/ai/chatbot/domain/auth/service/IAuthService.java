@@ -15,7 +15,7 @@ public interface IAuthService {
      * @param code 验证码
      * @return Token
      */
-    AuthStateEntity doLogin(String code);
+    AuthStateEntity doLogin(String code, String openId);
 
     boolean checkToken(String token);
 

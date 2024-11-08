@@ -44,11 +44,11 @@ public class AuthController {
      * @return A Response object containing the authentication result, including a token if successful.
      */
     @RequestMapping(value = "login", method = RequestMethod.POST)
-    public Response<String> doLogin(@RequestParam String code) {
-        log.info("Authentication login check started, verification code: {}", code);
+    public Response<String> doLogin(@RequestParam String code, @RequestParam String openId) {
+        log.info("Authentication login check started, verification code: {}, openId:{}", code, openId);
         try {
             // Attempt to authenticate using the provided code
-            AuthStateEntity authStateEntity = authService.doLogin(code);
+            AuthStateEntity authStateEntity = authService.doLogin(code, openId);
             log.info("Authentication login check completed, verification code: {} Result: {}", code, JSON.toJSONString(authStateEntity));
 
             // Intercept if authentication failed
