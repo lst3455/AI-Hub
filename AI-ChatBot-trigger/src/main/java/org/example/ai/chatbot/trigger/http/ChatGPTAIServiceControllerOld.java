@@ -114,7 +114,7 @@ public class ChatGPTAIServiceControllerOld {
                 {
                     add(ChatCompletionRequest.Prompt.builder()
                             .role(Role.user.getCode())
-                            .content("Use the same language as the user if not specified.\n" + request.getMessages().stream()
+                            .content("you must use the same language with the input if not specify.\n" + request.getMessages().stream()
                                     .map(MessageEntity::getContent)
                                     .reduce(String::concat)
                                     .get())

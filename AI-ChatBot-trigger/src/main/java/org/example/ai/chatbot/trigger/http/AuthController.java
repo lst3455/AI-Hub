@@ -87,7 +87,7 @@ public class AuthController {
      * @param openid The unique identifier for the user (e.g., WeChat openid) requesting a verification code.
      * @return A Response object containing the generated verification code or an error if unsuccessful.
      */
-    @RequestMapping(value = "code_create", method = RequestMethod.GET)
+    @RequestMapping(value = "code_create", method = RequestMethod.POST)
     public Response<String> codeCreate(@RequestParam("openid") String openid) {
         log.info("Verification code creation started, openid: {}", openid);
         try {

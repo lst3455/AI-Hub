@@ -5,20 +5,20 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 /**
- * @author Fuzhengwei bugstack.cn @小傅哥
- * @description
- * @create 2023-08-05 18:32
+ * Enum representing authentication status types, including success,
+ * missing verification code, and invalid verification code.
+ * Each type is associated with a unique code and message.
  */
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public enum AuthTypeVO {
 
-    A0000("0000","验证成功"),
-    A0001("0001","验证码不存在"),
-    A0002("0002","验证码无效");
+    A0000("0000", "Verification successful"),
+    A0001("0001", "Verification code does not exist"),
+    A0002("0002", "Invalid verification code");
 
-    private String code;
-    private String info;
+    private String code;  // Unique code representing the authentication status
+    private String info;  // Informational message describing the authentication status
 
 }
