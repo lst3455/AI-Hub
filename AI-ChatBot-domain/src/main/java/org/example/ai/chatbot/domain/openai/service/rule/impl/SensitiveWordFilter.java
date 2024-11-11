@@ -7,7 +7,9 @@ import org.example.ai.chatbot.domain.openai.annotation.LogicStrategy;
 import org.example.ai.chatbot.domain.openai.model.aggregates.ChatProcessAggregate;
 import org.example.ai.chatbot.domain.openai.model.entity.MessageEntity;
 import org.example.ai.chatbot.domain.openai.model.entity.RuleLogicEntity;
+import org.example.ai.chatbot.domain.openai.model.entity.UserAccountEntity;
 import org.example.ai.chatbot.domain.openai.model.valobj.LogicCheckTypeVO;
+import org.example.ai.chatbot.domain.openai.model.valobj.UserAccountStatusVO;
 import org.example.ai.chatbot.domain.openai.service.rule.ILogicFilter;
 import org.example.ai.chatbot.domain.openai.service.rule.factory.DefaultLogicFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,7 +22,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 @LogicStrategy(logicMode = DefaultLogicFactory.LogicModel.SENSITIVE_WORD)
-public class SensitiveWordFilter implements ILogicFilter {
+public class SensitiveWordFilter implements ILogicFilter<UserAccountEntity> {
 
     @Resource
     private SensitiveWordBs words;
@@ -29,7 +31,7 @@ public class SensitiveWordFilter implements ILogicFilter {
     private String whiteListStr;
 
     @Override
-    public RuleLogicEntity<ChatProcessAggregate> filter(ChatProcessAggregate chatProcess) throws Exception {
+    public RuleLogicEntity<ChatProcessAggregate> filter(ChatProcessAggregate chatProcess, UserAccountEntity userAccountEntity) throws Exception {
         log.info("rule engine - sensitive - start, chatProcess:{}", JSON.toJSONString(chatProcess));
 
         // Whitelisted users are exempt from sensitive word filtering

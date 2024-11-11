@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.ai.chatbot.domain.openai.annotation.LogicStrategy;
 import org.example.ai.chatbot.domain.openai.model.aggregates.ChatProcessAggregate;
 import org.example.ai.chatbot.domain.openai.model.entity.RuleLogicEntity;
+import org.example.ai.chatbot.domain.openai.model.entity.UserAccountEntity;
 import org.example.ai.chatbot.domain.openai.model.valobj.LogicCheckTypeVO;
 import org.example.ai.chatbot.domain.openai.service.rule.ILogicFilter;
 import org.example.ai.chatbot.domain.openai.service.rule.factory.DefaultLogicFactory;
@@ -17,7 +18,7 @@ import javax.annotation.Resource;
 @Slf4j
 @Component
 @LogicStrategy(logicMode = DefaultLogicFactory.LogicModel.ACCESS_LIMIT)
-public class AccessLimitFilter implements ILogicFilter {
+public class AccessLimitFilter implements ILogicFilter<UserAccountEntity> {
 
     @Value("${app.config.limit-count:10}")
     private Integer limitCount;
@@ -27,7 +28,7 @@ public class AccessLimitFilter implements ILogicFilter {
     private Cache<String, Integer> visitCache;
 
     @Override
-    public RuleLogicEntity<ChatProcessAggregate> filter(ChatProcessAggregate chatProcess) throws Exception {
+    public RuleLogicEntity<ChatProcessAggregate> filter(ChatProcessAggregate chatProcess, UserAccountEntity userAccountEntity) throws Exception {
         log.info("rule engine - accessLimit - start, chatProcess:{}", JSON.toJSONString(chatProcess));
 
         // 1. Whitelist users are granted direct access

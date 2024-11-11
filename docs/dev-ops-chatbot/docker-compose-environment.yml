@@ -1,0 +1,54 @@
+# 命令执行 docker-compose -f docker-compose-chatbot.yml up -d
+version: '3.9'
+services:
+  mysql:
+    image: mysql:5.7
+    container_name: chatbot_mysql
+    command: --default-authentication-plugin=mysql_native_password --log-bin=mysql-bin --server-id=1 --binlog-format=row --expire_logs_days=7
+    restart: always
+    environment:
+      TZ: Asia/Singapore
+      MYSQL_ROOT_PASSWORD: 123456
+    networks:
+      - chatbot-network
+    depends_on:
+      - mysql-job-dbdata
+    ports:
+      - "13307:3306"  # Change external port to avoid conflicts
+    volumes:
+      - ./mysql/my.cnf:/etc/mysql/conf.d/mysql.cnf
+      - ./mysql/sql:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+      start_period: 15s
+    volumes_from:
+      - mysql-job-dbdata
+
+  mysql-job-dbdata:
+    image: alpine:3.18.2
+    container_name: chatbot_mysql-job-dbdata
+    volumes:
+      - /var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin:5.2.1
+    container_name: chatbot_phpmyadmin
+    hostname: chatbot_phpmyadmin
+    ports:
+      - 8898:80  # Change external port to avoid conflicts
+    environment:
+      - PMA_HOST=mysql
+      - PMA_PORT=3306
+      - MYSQL_ROOT_PASSWORD=123456
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - chatbot-network
+
+networks:
+  chatbot-network:
+    driver: bridge

@@ -12,8 +12,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum LogicCheckTypeVO {
 
-    SUCCESS("0000", "校验通过"),
-    REFUSE("0001","校验拒绝"),
+    SUCCESS("0000", "pass"),
+    REFUSE("0001","refuse"),
             ;
 
     private final String code;
