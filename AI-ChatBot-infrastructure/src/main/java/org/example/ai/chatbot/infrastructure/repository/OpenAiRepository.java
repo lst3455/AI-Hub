@@ -62,8 +62,8 @@ public class OpenAiRepository implements IOpenAiRepository {
         modelTypes.deleteCharAt(modelTypes.length() - 1);
 
         userAccountPO.setModelTypes(modelTypes.toString());
-        userAccountPO.setTotalQuota(0);
-        userAccountPO.setSurplusQuota(0);
+        userAccountPO.setTotalQuota(3);
+        userAccountPO.setSurplusQuota(3);
 
         userAccountDao.insertUserAccount(userAccountPO);
     }

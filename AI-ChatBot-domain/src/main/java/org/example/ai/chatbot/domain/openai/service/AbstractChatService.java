@@ -57,28 +57,13 @@ public abstract class AbstractChatService implements IChatService {
                 emitter.complete();
                 return emitter;
             } else {
-                // If available, check free access limit
+                // If available, check other filter
                 ruleLogicEntity = this.doCheckLogic(chatProcess,
                         userAccountEntity,
-                        DefaultLogicFactory.LogicModel.ACCESS_LIMIT.getCode()
+                        userAccountEntity != null ? DefaultLogicFactory.LogicModel.MODEL_TYPE.getCode() : DefaultLogicFactory.LogicModel.NULL.getCode(),
+                        userAccountEntity != null ? DefaultLogicFactory.LogicModel.USER_QUOTA.getCode() : DefaultLogicFactory.LogicModel.NULL.getCode(),
+                        DefaultLogicFactory.LogicModel.SENSITIVE_WORD.getCode()
                 );
-
-                // If access is granted, check for sensitive words
-                if (LogicCheckTypeVO.SUCCESS.equals(ruleLogicEntity.getType())) {
-                    ruleLogicEntity = this.doCheckLogic(chatProcess,
-                            userAccountEntity,
-                            DefaultLogicFactory.LogicModel.SENSITIVE_WORD.getCode()
-                    );
-                }
-                // If access limit reached, apply other checks
-                else {
-                    ruleLogicEntity = this.doCheckLogic(chatProcess,
-                            userAccountEntity,
-                            userAccountEntity != null ? DefaultLogicFactory.LogicModel.MODEL_TYPE.getCode() : DefaultLogicFactory.LogicModel.NULL.getCode(),
-                            userAccountEntity != null ? DefaultLogicFactory.LogicModel.USER_QUOTA.getCode() : DefaultLogicFactory.LogicModel.NULL.getCode(),
-                            DefaultLogicFactory.LogicModel.SENSITIVE_WORD.getCode()
-                    );
-                }
             }
 
             // If any rule fails, return a message
