@@ -1,5 +1,6 @@
 package org.example.ai.chatbot.domain.openai.service;
 
+import cn.bugstack.chatglm.model.Model;
 import cn.bugstack.chatglm.session.OpenAiSession;
 import org.example.ai.chatbot.domain.openai.model.aggregates.ChatProcessAggregate;
 import org.example.ai.chatbot.domain.openai.model.entity.RuleLogicEntity;
@@ -16,6 +17,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * @author Fuzhengwei bugstack.cn @Xiao Fu
@@ -39,12 +41,7 @@ public abstract class AbstractChatService implements IChatService {
             // If account does not exist, create a new user account
             if (userAccountEntity == null) {
                 iOpenAiRepository.insertUserAccount(chatProcess.getOpenid());
-                userAccountEntity = new UserAccountEntity();
-                userAccountEntity.setOpenid(chatProcess.getOpenid());
-                userAccountEntity.setUserAccountStatusVO(UserAccountStatusVO.AVAILABLE);
-                userAccountEntity.setAllowModelTypeList(new ArrayList<>());
-                userAccountEntity.setTotalQuota(0);
-                userAccountEntity.setSurplusQuota(0);
+                userAccountEntity = iOpenAiRepository.queryUserAccount(chatProcess.getOpenid());
             }
 
             // 2. Apply rule filters

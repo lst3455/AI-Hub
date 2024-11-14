@@ -23,6 +23,7 @@ public class Constants {
         SUCCESS("0000", "Success"),
         UN_ERROR("0001", "Unknown failure"),
         ILLEGAL_PARAMETER("0002", "Invalid parameter"),
+        APP_TOKEN_ERROR("0004", "Interface access denied"),
         TOKEN_ERROR("0003", "Permission denied");
 
         private String code;  // Unique code representing the response type

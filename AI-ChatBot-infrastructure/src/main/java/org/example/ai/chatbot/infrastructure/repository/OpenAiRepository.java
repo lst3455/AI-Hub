@@ -1,14 +1,17 @@
 package org.example.ai.chatbot.infrastructure.repository;
 
 
+import cn.bugstack.chatglm.model.Model;
 import org.example.ai.chatbot.domain.openai.model.entity.UserAccountEntity;
 import org.example.ai.chatbot.domain.openai.model.valobj.UserAccountStatusVO;
 import org.example.ai.chatbot.domain.openai.repository.IOpenAiRepository;
 import org.example.ai.chatbot.infrastructure.dao.IUserAccountDao;
 import org.example.ai.chatbot.infrastructure.po.UserAccountPO;
+import org.example.ai.chatbot.types.common.Constants;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
+import java.util.Map;
 
 /**
  * @author Fuzhengwei bugstack.cn @小傅哥
@@ -20,6 +23,10 @@ public class OpenAiRepository implements IOpenAiRepository {
 
     @Resource
     private IUserAccountDao userAccountDao;
+
+    @Resource
+    private Map<String, Model> modelMap;
+
 
     @Override
     public int subAccountQuota(String openid) {
@@ -45,7 +52,16 @@ public class OpenAiRepository implements IOpenAiRepository {
         UserAccountPO userAccountPO = new UserAccountPO();
         userAccountPO.setOpenid(openid);
         userAccountPO.setStatus(0);
-        userAccountPO.setModelTypes("");
+
+        // get string type of model list
+        StringBuilder modelTypes = new StringBuilder();
+        for (String modelKey : modelMap.keySet()){
+            modelTypes.append(modelKey);
+            modelTypes.append(Constants.SPLIT);
+        }
+        modelTypes.deleteCharAt(modelTypes.length() - 1);
+
+        userAccountPO.setModelTypes(modelTypes.toString());
         userAccountPO.setTotalQuota(0);
         userAccountPO.setSurplusQuota(0);
 

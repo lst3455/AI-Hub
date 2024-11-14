@@ -41,6 +41,5 @@ CREATE TABLE `user_account`  (
 -- ----------------------------
 -- Records of user_account
 -- ----------------------------
-INSERT INTO `user_account` VALUES (1, 'xfg', 10, 0, 'gpt-3.5-turbo,gpt-3.5-turbo-16k', 0, '2023-10-03 18:56:13', '2023-10-04 10:50:23');
 
 SET FOREIGN_KEY_CHECKS = 1;
