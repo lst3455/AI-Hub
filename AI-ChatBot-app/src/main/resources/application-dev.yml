@@ -21,6 +21,24 @@ app:
     limit-count: 3
     # 白名单，不做频次拦截【微信的openai】oxfA9w8-23yvwTmo2ombz0E4zJv4
     white-list: user004
+    big-market:
+      appId: chatgpt-data
+      appToken: 89iu7o8732ijd9114
+
+dubbo:
+  application:
+    name: chatgpt-data
+    version: 1.0
+  registry:
+    id: nacos-registry
+    # address: N/A
+    # address: #multicast://224.5.6.7:1234
+    # address: zookeeper://127.0.0.1:2181
+    # address: nacos://192.168.1.108:8848
+    address: nacos://127.0.0.1:8848 # N/A nacos://127.0.0.1:8848
+  protocol:
+    name: dubbo
+    port: -1
 
 # 线程池配置
 thread:

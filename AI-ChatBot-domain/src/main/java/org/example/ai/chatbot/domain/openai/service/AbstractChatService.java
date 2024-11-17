@@ -2,6 +2,7 @@ package org.example.ai.chatbot.domain.openai.service;
 
 import cn.bugstack.chatglm.model.Model;
 import cn.bugstack.chatglm.session.OpenAiSession;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.example.ai.chatbot.domain.openai.model.aggregates.ChatProcessAggregate;
 import org.example.ai.chatbot.domain.openai.model.entity.RuleLogicEntity;
 import org.example.ai.chatbot.domain.openai.model.entity.UserAccountEntity;
@@ -9,6 +10,7 @@ import org.example.ai.chatbot.domain.openai.model.valobj.LogicCheckTypeVO;
 import org.example.ai.chatbot.domain.openai.model.valobj.UserAccountStatusVO;
 import org.example.ai.chatbot.domain.openai.repository.IOpenAiRepository;
 import org.example.ai.chatbot.domain.openai.service.rule.factory.DefaultLogicFactory;
+import org.example.ai.chatbot.domain.rebate.service.IRebateService;
 import org.example.ai.chatbot.types.common.Constants;
 import org.example.ai.chatbot.types.exception.ChatGPTException;
 
@@ -32,6 +34,9 @@ public abstract class AbstractChatService implements IChatService {
 
     @Resource
     protected IOpenAiRepository iOpenAiRepository;
+
+    @Resource
+    private IRebateService rebateService;
 
     @Override
     public ResponseBodyEmitter completions(ResponseBodyEmitter emitter, ChatProcessAggregate chatProcess) {
@@ -71,6 +76,13 @@ public abstract class AbstractChatService implements IChatService {
                 emitter.send(ruleLogicEntity.getInfo());
                 emitter.complete();
                 return emitter;
+            }
+
+            // process rebate for each chat session
+            try{
+                rebateService.rebateGoods(chatProcess.getOpenid(), RandomStringUtils.randomNumeric(11)); // todo check if can use this to replace orderId
+            }catch (Exception e){
+                log.error("point rebate fail, openId:{}",chatProcess.getOpenid(),e);
             }
 
             // 3. Process response
