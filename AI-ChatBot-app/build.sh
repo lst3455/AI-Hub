@@ -1,1 +1,1 @@
-docker build -f ./Dockerfile -t fuzhengwei/chatgpt-data-app:1.1 .
+docker build -f ./Dockerfile -t linsitian/chatbot-back-app:1.0 .

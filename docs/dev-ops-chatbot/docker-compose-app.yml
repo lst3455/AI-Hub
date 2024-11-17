@@ -1,0 +1,45 @@
+version: '3.8'
+# 命令执行 docker-compose -f docker-compose-app.yml up -d
+services:
+  chatbot-app:
+    image: linsitian/chatbot-back-app:1.0
+    container_name: chatbot-back-app
+    ports:
+      - "8090:8090"
+    environment:
+      - TZ=PRC
+      - SERVER_PORT=8091
+      - APP_CONFIG_API_VERSION=v0
+      - APP_CONFIG_CROSS_ORIGIN=*
+      - APP_CONFIG_LIMIT_COUNT=3
+      - APP_CONFIG_WHITE_LIST=ojbZUv18lbmriaTjcCWBYkOrSbHA
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=12qw!@QW
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/chatbot?useUnicode=true&characterEncoding=utf8&autoReconnect=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useSSL=false
+      - CHATGLM_SDK_CONFIG_ENABLED=true
+      - CHATGLM_SDK_CONFIG_API_HOST=https://open.bigmodel.cn/
+      - CHATGLM_SDK_CONFIG_API_KEY=d847050042570e7136f926a7d3cc3e83.UMIVEHtoforykzFU
+    volumes:
+      - ./log:/data/log
+    networks:
+      - my-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    restart: always
+
+  # OpenAI 应用前端
+  chatbot-front-app:
+    container_name: chatbot-front-app
+    image: linsitian/chatbot-front-app:1.0
+    ports:
+      - "3000:3000"
+    networks:
+      - my-network
+    restart: always
+
+networks:
+  my-network:
+    driver: bridge

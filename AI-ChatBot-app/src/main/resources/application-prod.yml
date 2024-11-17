@@ -1,22 +1,84 @@
 server:
-  port: 80
+  port: 8090
+  # 1核2G内存，线程数经验值200；4核8G内存【accept-count=1000、max-threads=800、max-connections=10000】，线程数经验值800。线程池过大，cpu调度会消耗大量时间
+  tomcat:
+    mbeanregistry:
+      enabled: true
+    max-connections: 100
+    threads:
+      max: 100        # 设定处理客户请求的线程的最大数目，决定了服务器可以同时响应客户请求的数,默认200
+      min-spare: 50   # 初始化线程数,最小空闲线程数,默认是10
+    accept-count: 10  # 等待队列长度
 
 # 应用配置
 app:
   config:
     # 版本，方便通过接口版本升级
-    api-version: v1
+    api-version: v0
     # 跨域，开发阶段可以设置为 * 不限制
-    cross-origin: https://itedus.cn
+    cross-origin: '*'
+    # 访问频次限制
+    limit-count: 3
+    # 白名单，不做频次拦截【微信的openai】oxfA9w8-23yvwTmo2ombz0E4zJv4
+    white-list: user004
+    big-market:
+      appId: chatgpt-data
+      appToken: 89iu7o8732ijd9114
 
-# ChatGPT SDK Config
-chatgpt:
+dubbo:
+  application:
+    name: chatgpt-data
+    version: 1.0
+  registry:
+    id: nacos-registry
+    # address: N/A
+    # address: #multicast://224.5.6.7:1234
+    # address: zookeeper://127.0.0.1:2181
+    # address: nacos://192.168.1.108:8848
+    address: nacos://8.219.99.73:8848 # N/A nacos://127.0.0.1:8848
+  protocol:
+    name: dubbo
+    port: -1
+
+# 线程池配置
+thread:
+  pool:
+    executor:
+      config:
+        core-pool-size: 20
+        max-pool-size: 50
+        keep-alive-time: 5000
+        block-queue-size: 5000
+        policy: CallerRunsPolicy
+
+# ChatGLM SDK Config
+chatglm:
   sdk:
     config:
-      # 官网地址 https://api.openai.com/
-      api-host: https://api.openai.com/
-      # 官网申请 https://platform.openai.com/account/api-keys
-      api-key: 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
+      api-host: https://open.bigmodel.cn/
+      api-key: d847050042570e7136f926a7d3cc3e83.UMIVEHtoforykzFU
+
+# 数据库配置；SpringBoot 默认连接池为 HikariDataSource
+spring:
+  datasource:
+    username: root
+    password: 123456
+    url: jdbc:mysql://8.219.99.73:3306/chatbot?useUnicode=true&characterEncoding=utf8&autoReconnect=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useSSL=false
+    driver-class-name: com.mysql.jdbc.Driver
+  hikari:
+    pool-name: Retail_HikariCP
+    minimum-idle: 15 #最小空闲连接数量
+    idle-timeout: 180000 #空闲连接存活最大时间，默认600000（10分钟）
+    maximum-pool-size: 25 #连接池最大连接数，默认是10
+    auto-commit: true  #此属性控制从池返回的连接的默认自动提交行为,默认值：true
+    max-lifetime: 1800000 #此属性控制池中连接的最长生命周期，值0表示无限生命周期，默认1800000即30分钟
+    connection-timeout: 30000 #数据库连接超时时间,默认30秒，即30000
+    connection-test-query: SELECT 1
+  type: com.zaxxer.hikari.HikariDataSource
+
+mybatis:
+  mapper-locations: classpath:/mybatis/mapper/*.xml
+  config-location:  classpath:/mybatis/config/mybatis-config.xml
 
 # 日志
 logging:
