@@ -63,7 +63,7 @@ spring:
   datasource:
     username: root
     password: 123456
-    url: jdbc:mysql://8.219.99.73:3306/chatbot?useUnicode=true&characterEncoding=utf8&autoReconnect=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useSSL=false
+    url: jdbc:mysql://8.219.99.73:13306/chatbot?useUnicode=true&characterEncoding=utf8&autoReconnect=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useSSL=false
     driver-class-name: com.mysql.jdbc.Driver
   hikari:
     pool-name: Retail_HikariCP
