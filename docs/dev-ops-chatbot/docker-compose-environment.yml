@@ -14,7 +14,7 @@ services:
     depends_on:
       - mysql-job-dbdata
     ports:
-      - "13307:3306"  # Change external port to avoid conflicts
+      - "13306:3306"  # Change external port to avoid conflicts
     volumes:
       - ./mysql/my.cnf:/etc/mysql/conf.d/mysql.cnf
       - ./mysql/sql:/docker-entrypoint-initdb.d
@@ -38,7 +38,7 @@ services:
     container_name: chatbot_phpmyadmin
     hostname: chatbot_phpmyadmin
     ports:
-      - 8898:80  # Change external port to avoid conflicts
+      - 8899:80  # Change external port to avoid conflicts
     environment:
       - PMA_HOST=mysql
       - PMA_PORT=3306

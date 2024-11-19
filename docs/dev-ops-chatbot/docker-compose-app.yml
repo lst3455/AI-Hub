@@ -15,7 +15,7 @@ services:
       - APP_CONFIG_WHITE_LIST=ojbZUv18lbmriaTjcCWBYkOrSbHA
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=123456
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/chatbot?useUnicode=true&characterEncoding=utf8&autoReconnect=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useSSL=false
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:13306/chatbot?useUnicode=true&characterEncoding=utf8&autoReconnect=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useSSL=false
       - CHATGLM_SDK_CONFIG_ENABLED=true
       - CHATGLM_SDK_CONFIG_API_HOST=https://open.bigmodel.cn/
       - CHATGLM_SDK_CONFIG_API_KEY=d847050042570e7136f926a7d3cc3e83.UMIVEHtoforykzFU
