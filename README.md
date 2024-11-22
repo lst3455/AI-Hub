@@ -29,12 +29,12 @@ The project took more than half a year from requirement analysis, architecture l
 
 2. **Custom SDK Integration with ZHIPU GLM**  
    A custom SDK was developed to interface with the **ZHIPU GLM** model using a **session-based conversational model**.
-  - **Session Management**: Leveraged **Guava** for storing session histories, ensuring efficient state management.
-  - **Streaming Responses**: Implemented a **factory pattern** to support dynamic, streamed responses.
+   - **Session Management**: Leveraged **Guava** for storing session histories, ensuring efficient state management.
+   - **Streaming Responses**: Implemented a **factory pattern** to support dynamic, streamed responses.
 
 3. **Sensitive Content Management with Chain of Responsibility**  
    A **chain of responsibility pattern** is used for managing content filtration through whitelist checks and sensitive word filtering.
-  - **Customizable Filtering**: Integrated the **sensitive-word filtering system** with adjustable filtering levels for diverse use cases.
+   - **Customizable Filtering**: Integrated the **sensitive-word filtering system** with adjustable filtering levels for diverse use cases.
 
 4. **Inter-Service Communication with RPC**  
    Inter-service communication is facilitated through **Dubbo** for RPC interfaces, with **Nacos** as the service registry.
