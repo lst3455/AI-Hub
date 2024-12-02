@@ -40,6 +40,7 @@ public abstract class AbstractChatService implements IChatService {
 
     @Override
     public ResponseBodyEmitter completions(ResponseBodyEmitter emitter, ChatProcessAggregate chatProcess) {
+        log.info("current token: {}",openAiSession.configuration().getApiKey());
         try {
             // 1. Get user account
             UserAccountEntity userAccountEntity = iOpenAiRepository.queryUserAccount(chatProcess.getOpenid());

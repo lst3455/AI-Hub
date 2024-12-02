@@ -56,7 +56,7 @@ chatglm:
   sdk:
     config:
       api-host: https://open.bigmodel.cn/
-      api-key: d847050042570e7136f926a7d3cc3e83.UMIVEHtoforykzFU
+      api-key: 6c9e6fb3848d6fe9017c00cc0451fd51.jONDjF99I7sCyoVa
 
 # 数据库配置；SpringBoot 默认连接池为 HikariDataSource
 spring:
