@@ -7,11 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
-/**
- * @author Fuzhengwei bugstack.cn @小傅哥
- * @description 用户账户持久化对象
- * @create 2023-10-03 16:36
- */
+
 @Data
 @Builder
 @AllArgsConstructor

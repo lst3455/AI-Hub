@@ -12,11 +12,7 @@ import org.example.trigger.api.response.Response;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-/**
- * @author Fuzhengwei bugstack.cn @小傅哥
- * @description 返利服务
- * @create 2024-10-20 14:27
- */
+
 @Slf4j
 @Service
 public class RebateServiceRPC {

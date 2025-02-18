@@ -2,11 +2,7 @@ package org.example.ai.chatbot.domain.openai.model.entity;
 
 import lombok.Data;
 
-/**
- * @author Fuzhengwei bugstack.cn @小傅哥
- * @description
- * @create 2023-07-16 08:47
- */
+
 @Data
 public class ChoiceEntity {
 

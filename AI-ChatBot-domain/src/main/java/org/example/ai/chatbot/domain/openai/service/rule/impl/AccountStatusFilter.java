@@ -11,11 +11,6 @@ import org.example.ai.chatbot.domain.openai.service.rule.ILogicFilter;
 import org.example.ai.chatbot.domain.openai.service.rule.factory.DefaultLogicFactory;
 import org.springframework.stereotype.Component;
 
-/**
- * @author Fuzhengwei bugstack.cn @Xiao Fu
- * @description Account verification
- * @create 2023-10-03 17:44
- */
 @Slf4j
 @Component
 @LogicStrategy(logicMode = DefaultLogicFactory.LogicModel.ACCOUNT_STATUS)

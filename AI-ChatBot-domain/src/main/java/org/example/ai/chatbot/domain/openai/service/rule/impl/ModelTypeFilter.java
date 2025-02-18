@@ -13,11 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-/**
- * @author Fuzhengwei bugstack.cn @Xiao Fu
- * @description Allowed model filter for access control
- * @create 2023-10-03 16:53
- */
+
 @Slf4j
 @Component
 @LogicStrategy(logicMode = DefaultLogicFactory.LogicModel.MODEL_TYPE)

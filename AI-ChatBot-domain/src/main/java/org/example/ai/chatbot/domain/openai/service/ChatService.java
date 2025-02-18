@@ -33,11 +33,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-/**
- * @author Fuzhengwei bugstack.cn @小傅哥
- * @description
- * @create 2023-07-22 21:11
- */
+
 @Service
 @Slf4j
 public class ChatService extends AbstractChatService {

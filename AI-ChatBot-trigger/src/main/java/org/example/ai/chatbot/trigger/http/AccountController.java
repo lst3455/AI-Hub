@@ -19,11 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.Map;
 
-/**
- * @author Fuzhengwei bugstack.cn @小傅哥
- * @description 账户额度
- * @create 2024-10-06 09:20
- */
+
 @Slf4j
 @RestController()
 @CrossOrigin("${app.config.cross-origin}")

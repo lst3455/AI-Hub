@@ -8,11 +8,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 
 
-/**
- * @author Fuzhengwei bugstack.cn @小傅哥
- * @description 订单服务
- * @create 2023-10-05 13:10
- */
+
 @Service
 public class RebateService implements IRebateService {
 

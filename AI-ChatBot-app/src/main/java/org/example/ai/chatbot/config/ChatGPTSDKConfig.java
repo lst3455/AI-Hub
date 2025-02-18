@@ -8,11 +8,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/**
- * @author Fuzhengwei bugstack.cn @小傅哥
- * @description OpenAiSession 工厂配置开启
- * @create 2023-07-16 08:07
- */
+
 @Configuration
 @EnableConfigurationProperties(ChatGPTSDKConfigProperties.class)
 public class ChatGPTSDKConfig {

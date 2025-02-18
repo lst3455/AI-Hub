@@ -6,11 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/**
- * @author Fuzhengwei bugstack.cn @Little Fu
- * @description Sensitive Word Configuration
- * @created 2023-09-16 17:38
- */
+
 @Slf4j
 @Configuration
 public class SensitiveWordConfig {

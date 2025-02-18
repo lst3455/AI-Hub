@@ -5,11 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * @author Fuzhengwei bugstack.cn @小傅哥
- * @description 调整额度实体对象
- * @create 2024-10-06 09:07
- */
+
 @Data
 @Builder
 @AllArgsConstructor

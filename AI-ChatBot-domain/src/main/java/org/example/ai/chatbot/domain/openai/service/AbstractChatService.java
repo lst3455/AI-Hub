@@ -1,13 +1,11 @@
 package org.example.ai.chatbot.domain.openai.service;
 
-import cn.bugstack.chatglm.model.Model;
 import cn.bugstack.chatglm.session.OpenAiSession;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.example.ai.chatbot.domain.openai.model.aggregates.ChatProcessAggregate;
 import org.example.ai.chatbot.domain.openai.model.entity.RuleLogicEntity;
 import org.example.ai.chatbot.domain.openai.model.entity.UserAccountEntity;
 import org.example.ai.chatbot.domain.openai.model.valobj.LogicCheckTypeVO;
-import org.example.ai.chatbot.domain.openai.model.valobj.UserAccountStatusVO;
 import org.example.ai.chatbot.domain.openai.repository.IOpenAiRepository;
 import org.example.ai.chatbot.domain.openai.service.rule.factory.DefaultLogicFactory;
 import org.example.ai.chatbot.domain.rebate.service.IRebateService;
@@ -18,14 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Map;
 
-/**
- * @author Fuzhengwei bugstack.cn @Xiao Fu
- * @description Abstract chat service
- * @create 2023-07-22 21:12
- */
 @Slf4j
 public abstract class AbstractChatService implements IChatService {
 
@@ -40,7 +31,8 @@ public abstract class AbstractChatService implements IChatService {
 
     @Override
     public ResponseBodyEmitter completions(ResponseBodyEmitter emitter, ChatProcessAggregate chatProcess) {
-        log.info("current token: {}",openAiSession.configuration().getApiKey());
+        openAiSession.configuration().setApiSecretKey("8116aa8a1aad4203993b2b78054d61e6.YO0YtPL1ludEPlDJ"); //todo for some unknown reason, can not initialize secretKey correctly, so do the hardcode here
+        log.info("current key: {}, secert: {}",openAiSession.configuration().getApiKey(), openAiSession.configuration().getApiSecret());
         try {
             // 1. Get user account
             UserAccountEntity userAccountEntity = iOpenAiRepository.queryUserAccount(chatProcess.getOpenid());
