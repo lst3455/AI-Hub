@@ -13,11 +13,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 
-/**
- * @author Fuzhengwei bugstack.cn @Xiao Fu
- * @description Rule filter for deducting user quota
- * @create 2023-10-03 16:48
- */
+
 @Slf4j
 @Component
 @LogicStrategy(logicMode = DefaultLogicFactory.LogicModel.USER_QUOTA)

@@ -17,11 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
-/**
- * @Author Fuzhengwei bugstack.cn @XiaoFuGe
- * @Description
- * @Created 2023-07-16 09:19
- */
+
 @Slf4j
 @RestController()
 @CrossOrigin("${app.config.cross-origin}")

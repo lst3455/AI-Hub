@@ -3,11 +3,7 @@ package org.example.ai.chatbot.config;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-/**
- * @author Fuzhengwei bugstack.cn @小傅哥
- * @description
- * @create 2023-07-22 20:36
- */
+
 @Data
 @ConfigurationProperties(prefix = "chatglm.sdk.config", ignoreInvalidFields = true)
 public class ChatGPTSDKConfigProperties {

@@ -7,11 +7,7 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.concurrent.TimeUnit;
 
-/**
- * @author Fuzhengwei bugstack.cn @小傅哥
- * @description
- * @create 2023-08-05 17:45
- */
+
 @Configuration
 public class GoogleGuavaCodeCacheConfig {
 

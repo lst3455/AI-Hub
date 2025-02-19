@@ -5,11 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-/**
- * @author Fuzhengwei bugstack.cn @小傅哥
- * @description 账户额度值对象
- * @create 2024-10-06 08:56
- */
+
 @Builder
 @Getter
 @AllArgsConstructor
