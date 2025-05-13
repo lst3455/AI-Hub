@@ -29,10 +29,10 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
         <!-- chatgpt-sdk-java https://gitcode.net/KnowledgePlanet/chatgpt/chatgpt-sdk-java-->
-        <dependency>
-            <groupId>cn.bugstack</groupId>
-            <artifactId>chatglm-sdk-java</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>cn.bugstack</groupId>-->
+<!--            <artifactId>chatglm-sdk-java</artifactId>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.example</groupId>
             <artifactId>AI-ChatBot-types</artifactId>

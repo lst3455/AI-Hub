@@ -49,10 +49,10 @@
             <artifactId>commons-codec</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>cn.bugstack</groupId>
-            <artifactId>chatglm-sdk-java</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>cn.bugstack</groupId>-->
+<!--            <artifactId>chatglm-sdk-java</artifactId>-->
+<!--        </dependency>-->
 
         <!-- https://mvnrepository.com/artifact/com.github.houbb/sensitive-word -->
         <dependency>

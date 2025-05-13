@@ -62,10 +62,10 @@
             <scope>test</scope>
         </dependency>
         <!-- chatgpt-sdk-java https://gitcode.net/KnowledgePlanet/chatgpt/chatgpt-sdk-java-->
-        <dependency>
-            <groupId>cn.bugstack</groupId>
-            <artifactId>chatglm-sdk-java</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>cn.bugstack</groupId>-->
+<!--            <artifactId>chatglm-sdk-java</artifactId>-->
+<!--        </dependency>-->
         <!-- 自身模块 begin -->
         <dependency>
             <groupId>org.example</groupId>
