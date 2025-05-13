@@ -31,6 +31,7 @@ public class OllamaConfig {
 //        return new TokenTextSplitter();
 //    }
 //
+//
 //    @Bean
 //    public SimpleVectorStore vectorStore(@Value("${spring.ai.rag.embed}") String model, OllamaApi ollamaApi, OpenAiApi openAiApi) {
 //        if ("nomic-embed-text".equalsIgnoreCase(model)) {

@@ -58,6 +58,7 @@ chatglm:
       api-host: https://open.bigmodel.cn/
       api-key: 6c9e6fb3848d6fe9017c00cc0451fd51.jONDjF99I7sCyoVa
 
+
 # 数据库配置；SpringBoot 默认连接池为 HikariDataSource
 spring:
   datasource:
@@ -75,6 +76,9 @@ spring:
     connection-timeout: 30000 #数据库连接超时时间,默认30秒，即30000
     connection-test-query: SELECT 1
   type: com.zaxxer.hikari.HikariDataSource
+  ai:
+    ollama:
+      base-url: http://117.72.127.104:11434 # cloud deployment LLM
 
 mybatis:
   mapper-locations: classpath:/mybatis/mapper/*.xml
