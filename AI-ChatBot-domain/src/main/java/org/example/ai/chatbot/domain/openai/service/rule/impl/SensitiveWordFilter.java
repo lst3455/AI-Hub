@@ -2,6 +2,7 @@ package org.example.ai.chatbot.domain.openai.service.rule.impl;
 
 import com.alibaba.fastjson2.JSON;
 import com.github.houbb.sensitive.word.bs.SensitiveWordBs;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.example.ai.chatbot.domain.openai.annotation.LogicStrategy;
 import org.example.ai.chatbot.domain.openai.model.aggregates.ChatProcessAggregate;
@@ -9,13 +10,11 @@ import org.example.ai.chatbot.domain.openai.model.entity.MessageEntity;
 import org.example.ai.chatbot.domain.openai.model.entity.RuleLogicEntity;
 import org.example.ai.chatbot.domain.openai.model.entity.UserAccountEntity;
 import org.example.ai.chatbot.domain.openai.model.valobj.LogicCheckTypeVO;
-import org.example.ai.chatbot.domain.openai.model.valobj.UserAccountStatusVO;
 import org.example.ai.chatbot.domain.openai.service.rule.ILogicFilter;
 import org.example.ai.chatbot.domain.openai.service.rule.factory.DefaultLogicFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.util.List;
 import java.util.stream.Collectors;
 

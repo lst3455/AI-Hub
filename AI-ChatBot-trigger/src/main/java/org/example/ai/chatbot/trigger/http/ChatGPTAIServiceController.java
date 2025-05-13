@@ -1,5 +1,6 @@
 package org.example.ai.chatbot.trigger.http;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.example.ai.chatbot.domain.auth.service.IAuthService;
 import org.example.ai.chatbot.domain.openai.model.aggregates.ChatProcessAggregate;
 import org.example.ai.chatbot.domain.openai.model.entity.MessageEntity;
@@ -12,8 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.annotation.Resource;
+
 import java.io.IOException;
 import java.util.stream.Collectors;
 

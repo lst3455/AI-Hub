@@ -16,7 +16,7 @@ import org.example.ai.chatbot.types.exception.ChatGPTException;
 import org.example.ai.chatbot.types.model.Response;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.Map;
 
 

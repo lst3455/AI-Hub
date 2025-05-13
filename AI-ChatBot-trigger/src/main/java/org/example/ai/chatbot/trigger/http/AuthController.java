@@ -11,7 +11,7 @@ import org.example.ai.chatbot.types.common.Constants;
 import org.example.ai.chatbot.types.model.Response;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 /**
  * This controller manages authentication operations, including user login via verification code

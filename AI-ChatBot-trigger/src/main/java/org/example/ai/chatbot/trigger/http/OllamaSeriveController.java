@@ -1,6 +1,7 @@
 package org.example.ai.chatbot.trigger.http;
 
 import com.alibaba.fastjson.JSON;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.example.ai.chatbot.trigger.http.dto.ChatGPTRequestDTO;
 import org.example.ai.chatbot.types.exception.ChatGPTException;
@@ -11,8 +12,7 @@ import org.springframework.ai.ollama.api.OllamaOptions;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.annotation.Resource;
 
 @RestController()
 @CrossOrigin("*")

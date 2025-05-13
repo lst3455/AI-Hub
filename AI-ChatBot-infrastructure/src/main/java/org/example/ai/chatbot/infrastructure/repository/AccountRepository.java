@@ -9,7 +9,7 @@ import org.example.ai.chatbot.infrastructure.dao.IUserAccountDao;
 import org.example.ai.chatbot.infrastructure.po.UserAccountPO;
 import org.springframework.stereotype.Repository;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 
 @Repository
