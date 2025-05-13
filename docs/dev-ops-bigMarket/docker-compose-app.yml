@@ -2,7 +2,7 @@ version: '3.8'
 # 命令执行 docker-compose -f docker-compose-app.yml up -d
 services:
   chatbot-app:
-    image: linsitian/chatbot-back-app:1.0
+    image: linsitian/chatbot-back-app:2.0
     container_name: chatbot-back-app
     ports:
       - "8090:8090"
@@ -33,7 +33,7 @@ services:
   # OpenAI 应用前端
   chatbot-front-app:
     container_name: chatbot-front-app
-    image: linsitian/chatbot-front-app:1.0
+    image: linsitian/chatbot-front-app:2.0
     ports:
       - "3000:3000"
     networks:
