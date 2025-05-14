@@ -25,7 +25,8 @@ public class Constants {
         ILLEGAL_PARAMETER("0002", "Invalid parameter"),
         APP_TOKEN_ERROR("0004", "Interface access denied"),
         TOKEN_ERROR("0003", "Permission denied"),
-        USER_BANNED("0004","Current user is banned");
+        USER_BANNED("0004","Current user is banned"),
+        QUOTA_OR_MODEL_TYPE_UNSUPPORTED("0005","Quota or model type unavailable for current user");
 
         private String code;  // Unique code representing the response type
         private String info;  // Informational message associated with the response code

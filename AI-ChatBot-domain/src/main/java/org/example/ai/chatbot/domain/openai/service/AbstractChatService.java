@@ -69,8 +69,8 @@ public abstract class AbstractChatService implements IChatService {
 
             // If any rule fails, return error message as Flux
             if (!LogicCheckTypeVO.SUCCESS.equals(ruleLogicEntity.getType())) {
-                return Flux.just(formatErrorMessage(Constants.ResponseCode.ILLEGAL_PARAMETER.getCode(),
-                        Constants.ResponseCode.ILLEGAL_PARAMETER.getInfo()));
+                return Flux.just(formatErrorMessage(Constants.ResponseCode.QUOTA_OR_MODEL_TYPE_UNSUPPORTED.getCode(),
+                        Constants.ResponseCode.QUOTA_OR_MODEL_TYPE_UNSUPPORTED.getInfo()));
             }
 
             // process rebate for each chat session
