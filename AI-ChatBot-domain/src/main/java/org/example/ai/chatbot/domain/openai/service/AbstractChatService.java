@@ -53,36 +53,46 @@ public abstract class AbstractChatService implements IChatService {
                     userAccountEntity != null ? DefaultLogicFactory.LogicModel.ACCOUNT_STATUS.getCode() : DefaultLogicFactory.LogicModel.NULL.getCode()
             );
 
-            // If the account is unavailable, return a message
+            // If the account is unavailable, return error message as Flux
             if (!LogicCheckTypeVO.SUCCESS.equals(ruleLogicEntity.getType())) {
-                throw new ChatGPTException(Constants.ResponseCode.USER_BANNED.getCode(), Constants.ResponseCode.USER_BANNED.getInfo());
-            } else {
-                // If available, check other filter
-                ruleLogicEntity = this.doCheckLogic(chatProcessAggregate,
-                        userAccountEntity,
-                        userAccountEntity != null ? DefaultLogicFactory.LogicModel.MODEL_TYPE.getCode() : DefaultLogicFactory.LogicModel.NULL.getCode(),
-                        userAccountEntity != null ? DefaultLogicFactory.LogicModel.USER_QUOTA.getCode() : DefaultLogicFactory.LogicModel.NULL.getCode(),
-                        DefaultLogicFactory.LogicModel.SENSITIVE_WORD.getCode()
-                );
+                return Flux.just(formatErrorMessage(Constants.ResponseCode.USER_BANNED.getCode(),
+                        Constants.ResponseCode.USER_BANNED.getInfo()));
             }
 
-            // If any rule fails, return a message
+            // If available, check other filter
+            ruleLogicEntity = this.doCheckLogic(chatProcessAggregate,
+                    userAccountEntity,
+                    userAccountEntity != null ? DefaultLogicFactory.LogicModel.MODEL_TYPE.getCode() : DefaultLogicFactory.LogicModel.NULL.getCode(),
+                    userAccountEntity != null ? DefaultLogicFactory.LogicModel.USER_QUOTA.getCode() : DefaultLogicFactory.LogicModel.NULL.getCode(),
+                    DefaultLogicFactory.LogicModel.SENSITIVE_WORD.getCode()
+            );
+
+            // If any rule fails, return error message as Flux
             if (!LogicCheckTypeVO.SUCCESS.equals(ruleLogicEntity.getType())) {
-                throw new ChatGPTException(Constants.ResponseCode.ILLEGAL_PARAMETER.getCode(), Constants.ResponseCode.ILLEGAL_PARAMETER.getInfo());
+                return Flux.just(formatErrorMessage(Constants.ResponseCode.ILLEGAL_PARAMETER.getCode(),
+                        Constants.ResponseCode.ILLEGAL_PARAMETER.getInfo()));
             }
 
             // process rebate for each chat session
-            try{
-                rebateService.rebateGoods(chatProcessAggregate.getOpenid(), RandomStringUtils.randomNumeric(11)); // todo check if can use this to replace orderId
-            }catch (Exception e){
-                log.error("point rebate fail, openId:{}",chatProcessAggregate.getOpenid(),e);
+            try {
+                rebateService.rebateGoods(chatProcessAggregate.getOpenid(), RandomStringUtils.randomNumeric(11));
+            } catch (Exception e) {
+                log.error("point rebate fail, openId:{}", chatProcessAggregate.getOpenid(), e);
+                // Continue execution even if rebate fails
             }
 
             // 3. Process response
             return doMessageResponse(chatProcessAggregate);
         } catch (Exception e) {
-            throw new ChatGPTException(Constants.ResponseCode.UN_ERROR.getCode(), Constants.ResponseCode.UN_ERROR.getInfo());
+            log.error("Unexpected error in generateStream", e);
+            return Flux.just(formatErrorMessage(Constants.ResponseCode.UN_ERROR.getCode(),
+                    Constants.ResponseCode.UN_ERROR.getInfo()));
         }
+    }
+
+    // Helper method to format error messages
+    private String formatErrorMessage(String code, String message) {
+        return String.format("{\"error\":{\"code\":\"%s\",\"message\":\"%s\"}}", code, message);
     }
 
     protected abstract RuleLogicEntity<ChatProcessAggregate> doCheckLogic(ChatProcessAggregate chatProcess, UserAccountEntity userAccountEntity, String... logics) throws Exception;
