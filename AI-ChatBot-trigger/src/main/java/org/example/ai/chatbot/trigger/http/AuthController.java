@@ -44,7 +44,7 @@ public class AuthController {
      * @return A Response object containing the authentication result, including a token if successful.
      */
     @RequestMapping(value = "login", method = RequestMethod.POST)
-    public Response<String> doLogin(@RequestParam String code, @RequestParam String openId) {
+    public Response<String> doLogin(@RequestParam("code") String code, @RequestParam("openId") String openId) {
         log.info("Authentication login check started, verification code: {}, openId:{}", code, openId);
         try {
             // Attempt to authenticate using the provided code
