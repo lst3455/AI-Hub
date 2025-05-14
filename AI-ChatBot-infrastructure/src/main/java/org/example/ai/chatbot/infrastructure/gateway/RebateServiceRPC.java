@@ -1,6 +1,7 @@
 package org.example.ai.chatbot.infrastructure.gateway;
 
 import com.alibaba.fastjson.JSON;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.example.trigger.api.IRebateService;
@@ -14,13 +15,20 @@ import org.springframework.stereotype.Service;
 @Service
 public class RebateServiceRPC {
 
-    @DubboReference(interfaceClass = IRebateService.class, version = "1.0", check = false, timeout = 5000)
+    @DubboReference(interfaceClass = IRebateService.class, version = "1.0", check = true, timeout = 5000, retries = 3)
     private IRebateService rebateService;
 
     @Value("${app.config.big-market.appId}")
     private String appId;
     @Value("${app.config.big-market.appToken}")
     private String appToken;
+
+    @PostConstruct
+    public void validateRebateService() {
+        if (rebateService == null) {
+            log.warn("RebateService is not injected. Please check the Dubbo configuration.");
+        }
+    }
 
     public boolean rebate(String userId, String orderId) {
         try {
