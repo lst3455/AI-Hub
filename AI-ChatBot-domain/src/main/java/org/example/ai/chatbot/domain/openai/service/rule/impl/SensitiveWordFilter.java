@@ -6,12 +6,16 @@ import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.example.ai.chatbot.domain.openai.annotation.LogicStrategy;
 import org.example.ai.chatbot.domain.openai.model.aggregates.ChatProcessAggregate;
-import org.example.ai.chatbot.domain.openai.model.entity.MessageEntity;
 import org.example.ai.chatbot.domain.openai.model.entity.RuleLogicEntity;
 import org.example.ai.chatbot.domain.openai.model.entity.UserAccountEntity;
 import org.example.ai.chatbot.domain.openai.model.valobj.LogicCheckTypeVO;
 import org.example.ai.chatbot.domain.openai.service.rule.ILogicFilter;
 import org.example.ai.chatbot.domain.openai.service.rule.factory.DefaultLogicFactory;
+import org.springframework.ai.chat.messages.Message;
+import org.springframework.ai.chat.messages.MessageType;
+import org.springframework.ai.chat.messages.UserMessage;
+import org.springframework.ai.chat.messages.AssistantMessage;
+import org.springframework.ai.chat.messages.SystemMessage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -42,17 +46,23 @@ public class SensitiveWordFilter implements ILogicFilter<UserAccountEntity> {
 
         ChatProcessAggregate newChatProcessAggregate = new ChatProcessAggregate();
         newChatProcessAggregate.setOpenid(chatProcess.getOpenid());
-        newChatProcessAggregate.setModel(chatProcess.getModel());
+        newChatProcessAggregate.setOptions(chatProcess.getOptions());
 
-        List<MessageEntity> newMessages = chatProcess.getMessages().stream()
+        List<Message> newMessages = chatProcess.getMessages().stream()
                 .map(message -> {
                     String content = message.getContent();
                     String replace = words.replace(content);
-                    return MessageEntity.builder()
-                            .role(message.getRole())
-                            .name(message.getName())
-                            .content(replace)
-                            .build();
+
+                    // Create appropriate Message type based on original message type
+                    if (message instanceof UserMessage) {
+                        return new UserMessage(replace);
+                    } else if (message instanceof AssistantMessage) {
+                        return new AssistantMessage(replace);
+                    } else if (message instanceof SystemMessage) {
+                        return new SystemMessage(replace);
+                    } else {
+                        throw new IllegalArgumentException("Unsupported message type: " + message.getClass().getName());
+                    }
                 })
                 .collect(Collectors.toList());
 
@@ -63,5 +73,4 @@ public class SensitiveWordFilter implements ILogicFilter<UserAccountEntity> {
                 .data(newChatProcessAggregate)
                 .build();
     }
-
 }

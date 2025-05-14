@@ -23,7 +23,7 @@ public class ModelTypeFilter implements ILogicFilter<UserAccountEntity> {
     public RuleLogicEntity<ChatProcessAggregate> filter(ChatProcessAggregate chatProcess, UserAccountEntity userAccountEntity) throws Exception {
         // 1. List of models available to the user
         List<String> allowModelTypeList = userAccountEntity.getAllowModelTypeList();
-        String modelType = chatProcess.getModel();
+        String modelType = chatProcess.getOptions().getModel(); // todo update model check logic
 
         // 2. If the model type is allowed, grant access
         if (allowModelTypeList.contains(modelType)) {

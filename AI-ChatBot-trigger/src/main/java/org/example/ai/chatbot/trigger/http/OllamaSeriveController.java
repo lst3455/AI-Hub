@@ -4,10 +4,12 @@ import com.alibaba.fastjson.JSON;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.example.ai.chatbot.domain.auth.service.IAuthService;
+import org.example.ai.chatbot.domain.openai.model.aggregates.ChatProcessAggregate;
+import org.example.ai.chatbot.domain.openai.model.entity.MessageEntity;
+import org.example.ai.chatbot.domain.openai.service.IChatService;
 import org.example.ai.chatbot.trigger.http.dto.ChatGPTRequestDTO;
 import org.example.ai.chatbot.types.common.Constants;
 import org.example.ai.chatbot.types.exception.ChatGPTException;
-import org.springframework.ai.chat.ChatResponse;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.messages.SystemMessage;
@@ -17,7 +19,6 @@ import org.springframework.ai.ollama.OllamaChatClient;
 import org.springframework.ai.ollama.api.OllamaOptions;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import jakarta.annotation.Resource;
 import java.util.List;
@@ -34,6 +35,9 @@ public class OllamaSeriveController {
 
     @Resource
     private IAuthService authService;
+
+    @Resource
+    private IChatService chatService;
 
     /**
      * http://localhost:8090/api/v0/chatbot/ollama/generate_stream
@@ -76,17 +80,15 @@ public class OllamaSeriveController {
             // 5. Create options and get model from requestdeepseek-r1:1.5b
             OllamaOptions options = OllamaOptions.create().withModel(request.getModel());
 
+            // 4. Build parameters
+            ChatProcessAggregate chatProcessAggregate = ChatProcessAggregate.builder()
+                    .openid(openid)
+                    .options(options)
+                    .messages(aiMessages)
+                    .build();
+
             // 6. Stream the response - extract just the text content from each ChatResponse
-            return ollamaChatClient.stream(new Prompt(aiMessages, options))
-                    .map(chatResponse -> {
-                        if (chatResponse.getResult() != null
-                                && chatResponse.getResult().getOutput() != null
-                                && chatResponse.getResult().getOutput().getContent() != null) {
-                            return chatResponse.getResult().getOutput().getContent();
-                        }
-                        return "";
-                    })
-                    .filter(content -> !content.isEmpty() && !content.startsWith("<think>") && !content.startsWith("</think>"));
+            return chatService.generateStream(chatProcessAggregate);
         } catch (Exception e) {
             log.error("Streaming response, request: {} encountered an exception", request, e);
             return Flux.error(new ChatGPTException(e.getMessage()));
