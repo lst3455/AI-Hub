@@ -91,7 +91,7 @@ public class OllamaSeriveController {
             return chatService.generateStream(chatProcessAggregate);
         } catch (Exception e) {
             log.error("Streaming response, request: {} encountered an exception", request, e);
-            return Flux.error(new ChatGPTException(e.getMessage()));
+            throw new ChatGPTException(e.getMessage());
         }
     }
 }
