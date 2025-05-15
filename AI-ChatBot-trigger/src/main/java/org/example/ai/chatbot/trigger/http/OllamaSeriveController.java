@@ -5,7 +5,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.example.ai.chatbot.domain.auth.service.IAuthService;
 import org.example.ai.chatbot.domain.openai.model.aggregates.ChatProcessAggregate;
-import org.example.ai.chatbot.domain.openai.model.entity.MessageEntity;
 import org.example.ai.chatbot.domain.openai.service.IChatService;
 import org.example.ai.chatbot.trigger.http.dto.ChatGPTRequestDTO;
 import org.example.ai.chatbot.types.common.Constants;
@@ -14,8 +13,6 @@ import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.messages.SystemMessage;
 import org.springframework.ai.chat.messages.AssistantMessage;
-import org.springframework.ai.chat.prompt.Prompt;
-import org.springframework.ai.ollama.OllamaChatClient;
 import org.springframework.ai.ollama.api.OllamaOptions;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -30,8 +27,6 @@ import java.util.stream.Collectors;
 @Slf4j
 public class OllamaSeriveController {
 
-    @Resource
-    private OllamaChatClient ollamaChatClient;
 
     @Resource
     private IAuthService authService;
@@ -78,7 +73,9 @@ public class OllamaSeriveController {
                     .collect(Collectors.toList());
 
             // 5. Create options and get model from requestdeepseek-r1:1.5b
-            OllamaOptions options = OllamaOptions.create().withModel(request.getModel());
+            OllamaOptions options = OllamaOptions.builder()
+                    .model(request.getModel())
+                    .build();
 
             // 4. Build parameters
             ChatProcessAggregate chatProcessAggregate = ChatProcessAggregate.builder()
