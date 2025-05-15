@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
 import java.util.Map;
+import java.util.Objects;
 
 
 @Service
@@ -44,19 +45,38 @@ public class ChatService extends AbstractChatService {
 
     @Override
     protected Flux<String> doMessageResponse(ChatProcessAggregate chatProcessAggregate) {
-        try{
-            return ollamaChatClient.stream(new Prompt(chatProcessAggregate.getMessages(), chatProcessAggregate.getOptions()))
-                    .map(chatResponse -> {
-                        if (chatResponse.getResult() != null
-                                && chatResponse.getResult().getOutput() != null
-                                && chatResponse.getResult().getOutput().getContent() != null) {
-                            return chatResponse.getResult().getOutput().getContent();
-                        }
-                        return "";
-                    })
-                    .filter(content -> !content.isEmpty() && !content.startsWith("<think>") && !content.startsWith("</think>"));
-        }catch (Exception e){
-            throw new ChatGPTException(Constants.ResponseCode.UN_ERROR.getCode(), Constants.ResponseCode.UN_ERROR.getInfo());
-        }
+        log.debug("Processing message response for model: {}",
+                chatProcessAggregate.getOptions().getModel());
+
+        return Flux.defer(() -> {
+            try {
+                return ollamaChatClient.stream(new Prompt(chatProcessAggregate.getMessages(),
+                                chatProcessAggregate.getOptions()))
+                        .mapNotNull(chatResponse -> {
+                            if (chatResponse.getResult() != null
+                                    && chatResponse.getResult().getOutput() != null
+                                    && chatResponse.getResult().getOutput().getContent() != null) {
+                                String content = chatResponse.getResult().getOutput().getContent();
+
+                                // Skip thinking content and empty responses
+                                if (content.isEmpty() || content.startsWith("<think>") ||
+                                        content.startsWith("</think>") || content.equals("\n")) {
+                                    return null;
+                                }
+
+                                return content;
+                            }
+                            return null;
+                        })
+                        .filter(Objects::nonNull)
+                        .onErrorResume(e -> {
+                            log.error("Error while streaming response", e);
+                            return Flux.just("Error processing request: " + e.getMessage());
+                        });
+            } catch (Exception e) {
+                log.error("Failed to initialize streaming response", e);
+                return Flux.just(Constants.ResponseCode.UN_ERROR.getInfo());
+            }
+        }).switchIfEmpty(Flux.just("No response generated"));
     }
 }

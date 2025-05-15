@@ -10,17 +10,9 @@ import org.example.ai.chatbot.domain.openai.repository.IOpenAiRepository;
 import org.example.ai.chatbot.domain.openai.service.rule.factory.DefaultLogicFactory;
 import org.example.ai.chatbot.domain.rebate.service.IRebateService;
 import org.example.ai.chatbot.types.common.Constants;
-import org.example.ai.chatbot.types.exception.ChatGPTException;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.ai.chat.messages.Message;
-import org.springframework.ai.chat.prompt.Prompt;
-import org.springframework.ai.ollama.OllamaChatClient;
-import org.springframework.ai.ollama.api.OllamaOptions;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 import reactor.core.publisher.Flux;
-
-import java.util.List;
 
 @Slf4j
 public abstract class AbstractChatService implements IChatService {
@@ -32,8 +24,6 @@ public abstract class AbstractChatService implements IChatService {
     @Resource
     private IRebateService rebateService;
 
-    @Resource
-    private OllamaChatClient ollamaChatClient;
 
     @Override
     public Flux<String> generateStream(ChatProcessAggregate chatProcessAggregate) {
@@ -55,7 +45,7 @@ public abstract class AbstractChatService implements IChatService {
 
             // If the account is unavailable, return error message as Flux
             if (!LogicCheckTypeVO.SUCCESS.equals(ruleLogicEntity.getType())) {
-                return Flux.just(formatErrorMessage(Constants.ResponseCode.USER_BANNED.getCode(),
+                return Flux.just(formatSseMessage("error", Constants.ResponseCode.USER_BANNED.getCode(),
                         Constants.ResponseCode.USER_BANNED.getInfo()));
             }
 
@@ -69,7 +59,7 @@ public abstract class AbstractChatService implements IChatService {
 
             // If any rule fails, return error message as Flux
             if (!LogicCheckTypeVO.SUCCESS.equals(ruleLogicEntity.getType())) {
-                return Flux.just(formatErrorMessage(Constants.ResponseCode.QUOTA_OR_MODEL_TYPE_UNSUPPORTED.getCode(),
+                return Flux.just(formatSseMessage("error", Constants.ResponseCode.QUOTA_OR_MODEL_TYPE_UNSUPPORTED.getCode(),
                         Constants.ResponseCode.QUOTA_OR_MODEL_TYPE_UNSUPPORTED.getInfo()));
             }
 
@@ -81,18 +71,51 @@ public abstract class AbstractChatService implements IChatService {
                 // Continue execution even if rebate fails
             }
 
-            // 3. Process response
-            return doMessageResponse(chatProcessAggregate);
+            // 3. Process response and transform to SSE format
+            return doMessageResponse(chatProcessAggregate)
+                    .map(content -> formatSseMessage("message", Constants.ResponseCode.SUCCESS.getCode(), content));
         } catch (Exception e) {
             log.error("Unexpected error in generateStream", e);
-            return Flux.just(formatErrorMessage(Constants.ResponseCode.UN_ERROR.getCode(),
+            return Flux.just(formatSseMessage("error", Constants.ResponseCode.UN_ERROR.getCode(),
                     Constants.ResponseCode.UN_ERROR.getInfo()));
         }
     }
 
-    // Helper method to format error messages
-    private String formatErrorMessage(String code, String message) {
-        return String.format("{\"error\":{\"code\":\"%s\",\"message\":\"%s\"}}", code, message);
+    /**
+     * Format response as Server-Sent Event with proper structure
+     * @param event The event type (message, error, etc.)
+     * @param code Status code
+     * @param content Message content
+     * @return Formatted SSE message
+     */
+    private String formatSseMessage(String event, String code, String content) {
+        String id = System.currentTimeMillis() + "-" + RandomStringUtils.randomAlphanumeric(8);
+        StringBuilder sb = new StringBuilder();
+        sb.append("id: ").append(id).append("\n");
+        sb.append("event: ").append(event).append("\n");
+        sb.append("data: {");
+        sb.append("\"id\":\"").append(id).append("\",");
+        sb.append("\"code\":\"").append(code).append("\",");
+        sb.append("\"content\":").append(jsonEscape(content));
+        sb.append("}\n\n");
+        return sb.toString();
+    }
+
+    /**
+     * Properly escape content for JSON inclusion
+     */
+    private String jsonEscape(String content) {
+        if (content == null) return "null";
+
+        // If content already looks like JSON, don't wrap it in quotes
+        if (content.trim().startsWith("{") && content.trim().endsWith("}")) {
+            return content;
+        } else {
+            // Escape quotes and wrap in quotes
+            return "\"" + content.replace("\"", "\\\"")
+                    .replace("\n", "\\n")
+                    .replace("\r", "\\r") + "\"";
+        }
     }
 
     protected abstract RuleLogicEntity<ChatProcessAggregate> doCheckLogic(ChatProcessAggregate chatProcess, UserAccountEntity userAccountEntity, String... logics) throws Exception;
