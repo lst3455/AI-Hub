@@ -50,7 +50,7 @@ public class OpenAiRepository implements IOpenAiRepository {
 //        }
 //        modelTypes.deleteCharAt(modelTypes.length() - 1);
 
-        userAccountPO.setModelTypes("deepseek-r1:1.5b");
+        userAccountPO.setModelTypes("qwen3:1.7b,qwen3:8b,qwen3:14b");
         userAccountPO.setTotalQuota(3);
         userAccountPO.setSurplusQuota(3);
 

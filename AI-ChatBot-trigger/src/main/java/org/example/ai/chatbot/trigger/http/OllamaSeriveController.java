@@ -34,6 +34,7 @@ public class OllamaSeriveController {
     @Resource
     private IChatService chatService;
 
+
     /**
      * http://localhost:8090/api/v0/chatbot/ollama/generate_stream
      */
