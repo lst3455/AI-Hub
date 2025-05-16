@@ -71,15 +71,11 @@ public class ChatService extends AbstractChatService {
 
     @Override
     protected Flux<String> doMessageResponse(ChatProcessAggregate chatProcess) {
-        // Select correct chatClient base on model
-        ChatClient selectedChatClient= getClientForModel(chatProcess.getOptions().getModel());
+        // Select correct chatClient based on model
+        ChatClient selectedChatClient = getClientForModel(chatProcess.getOptions().getModel());
 
         return Flux.defer(() -> {
             try {
-                final boolean[] insideThinkingTag = {false};
-                final boolean[] headerAdded = {false};
-                final boolean[] atLineStart = {true};  // Track if we're at the start of a line
-
                 List<Message> enrichedMessages = addSystemPrompt(chatProcess.getMessages());
 
                 return selectedChatClient
@@ -91,39 +87,7 @@ public class ChatService extends AbstractChatService {
                                 return Flux.empty();
                             }
 
-                            // Handle opening tag
-                            if (content.contains("<think>")) {
-                                insideThinkingTag[0] = true;
-                                headerAdded[0] = true;
-                                atLineStart[0] = false; // After header we're no longer at line start
-
-                                String afterTag = content.substring(content.indexOf("<think>") + 7);
-                                return Flux.just("> ***Thinking process:***\n> " + afterTag);
-                            }
-
-                            // Handle closing tag
-                            if (content.contains("</think>")) {
-                                insideThinkingTag[0] = false;
-                                String beforeTag = "";
-                                if (content.indexOf("</think>") > 0) {
-                                    beforeTag = content.substring(0, content.indexOf("</think>"));
-                                }
-                                atLineStart[0] = true; // After closing tag, we'll start a new "paragraph"
-                                return Flux.just(beforeTag + "\n\n");
-                            }
-
-                            // Handle thinking content
-                            if (insideThinkingTag[0]) {
-                                // Check for newlines in the content
-                                if (content.contains("\n")) {
-                                    // Replace all newlines with newline + blockquote marker
-                                    String formatted = content.replace("\n", "\n> ");
-                                    atLineStart[0] = formatted.endsWith("> ");
-                                    return Flux.just(atLineStart[0] ? formatted : (atLineStart[0] ? "> " : "") + formatted);
-                                }
-                            }
-
-                            // Regular content
+                            // Just return the content as is - no special processing
                             return Flux.just(content);
                         })
                         .onErrorResume(e -> Flux.just("Error: " + e.getMessage()));
