@@ -21,7 +21,7 @@ public class ChatProcessAggregate {
     /** 验证信息 */
     private String openid;
     /** 默认模型 */
-    private OllamaOptions options;
+    private String model;
     /** 问题描述 */
     private List<Message> messages;
 

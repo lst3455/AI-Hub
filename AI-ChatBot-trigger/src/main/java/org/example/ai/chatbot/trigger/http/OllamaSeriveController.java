@@ -73,15 +73,10 @@ public class OllamaSeriveController {
                     })
                     .collect(Collectors.toList());
 
-            // 5. Create options and get model from requestdeepseek-r1:1.5b
-            OllamaOptions options = OllamaOptions.builder()
-                    .model(request.getModel())
-                    .build();
-
             // 4. Build parameters
             ChatProcessAggregate chatProcessAggregate = ChatProcessAggregate.builder()
                     .openid(openid)
-                    .options(options)
+                    .model(request.getModel())
                     .messages(aiMessages)
                     .build();
 

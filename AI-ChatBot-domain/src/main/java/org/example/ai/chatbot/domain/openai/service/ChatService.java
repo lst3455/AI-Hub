@@ -26,17 +26,20 @@ public class ChatService extends AbstractChatService {
     private final ChatClient chatClient_qwen3_1_7b;
     private final ChatClient chatClient_qwen3_8b;
     private final ChatClient chatClient_qwen3_14b;
+    private final ChatClient chatClient_glm_4flash;
     private final Map<String, ChatClient> modelClientMap;
 
     public ChatService(
             @Qualifier("chatClient_qwen3_1_7b") ChatClient chatClient_qwen3_1_7b,
             @Qualifier("chatClient_qwen3_8b") ChatClient chatClient_qwen3_8b,
             @Qualifier("chatClient_qwen3_14b") ChatClient chatClient_qwen3_14b,
+            @Qualifier("chatClient_glm_4flash") ChatClient chatClient_glm_4flash,
             DefaultLogicFactory logicFactory
     ) {
         this.chatClient_qwen3_1_7b = chatClient_qwen3_1_7b;
         this.chatClient_qwen3_8b = chatClient_qwen3_8b;
         this.chatClient_qwen3_14b = chatClient_qwen3_14b;
+        this.chatClient_glm_4flash = chatClient_glm_4flash;
         this.logicFactory = logicFactory;
 
         // Initialize the model-to-client mapping
@@ -44,6 +47,7 @@ public class ChatService extends AbstractChatService {
         modelClientMap.put("qwen3:1.7b", chatClient_qwen3_1_7b);
         modelClientMap.put("qwen3:8b", chatClient_qwen3_8b);
         modelClientMap.put("qwen3:14b", chatClient_qwen3_14b);
+        modelClientMap.put("glm:4flash", chatClient_glm_4flash);
     }
 
 
@@ -72,14 +76,14 @@ public class ChatService extends AbstractChatService {
     @Override
     protected Flux<String> doMessageResponse(ChatProcessAggregate chatProcess) {
         // Select correct chatClient based on model
-        ChatClient selectedChatClient = getClientForModel(chatProcess.getOptions().getModel());
+        ChatClient selectedChatClient = getClientForModel(chatProcess.getModel());
 
         return Flux.defer(() -> {
             try {
                 List<Message> enrichedMessages = addSystemPrompt(chatProcess.getMessages());
 
                 return selectedChatClient
-                        .prompt(new Prompt(enrichedMessages, chatProcess.getOptions()))
+                        .prompt(new Prompt(enrichedMessages))
                         .stream()
                         .content()
                         .concatMap(content -> {

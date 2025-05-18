@@ -51,7 +51,7 @@ public class SensitiveWordFilter implements ILogicFilter<UserAccountEntity> {
         // 2) Rebuild aggregate with sanitized messages
         ChatProcessAggregate sanitized = new ChatProcessAggregate();
         sanitized.setOpenid(chatProcess.getOpenid());
-        sanitized.setOptions(chatProcess.getOptions());
+        sanitized.setModel(chatProcess.getModel());
 
         List<Message> filtered = chatProcess.getMessages().stream()
                 .map(msg -> {
