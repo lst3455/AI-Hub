@@ -2,16 +2,15 @@
 
 <div align="center">Try here: http://linst-yyds.top:3000</div>
 
-The project took more than half a year from requirement analysis, architecture learning, and design to coding implementation, and went through three versions of iterations.
+The AI-ChatBot took more than half a year from requirement analysis, architecture learning, and design to coding implementation, and went through four versions of iterations, the latest update is in May 2025.
+
+Using Spring-ai SDK, provide smooth and stable generation. Currently support Qwen3 series, Deepseek-R1, Deepseek-v3, and ChatGLM-4-Flase, and will continue to bring more in the future.
 
 ---
 
 <div align="center"><img src="docs/readme/auth.png" style="zoom: 33%;" /></div>
-<div align="center">authentication page</div>
-
-<div align="center"><img src="docs/readme/home.png" style="zoom: 33%;" /></div>
-<div align="center">home page</div>
-
+<div align="center"><img src="docs/readme/home1.png" style="zoom: 33%;" /></div>
+<div align="center"><img src="docs/readme/home2.png" style="zoom: 33%;" /></div>
 
 ---
 
@@ -27,10 +26,10 @@ The project took more than half a year from requirement analysis, architecture l
    The front end securely stores the tokens to enable temporary login-free sessions.
 
 
-2. **Custom SDK Integration with ZHIPU GLM**  
-   A custom SDK was developed to interface with the **ZHIPU GLM** model using a **session-based conversational model**.
+2. **Spring AI Integration with multiple model options**  
+   Using Spring-ai to interface with the models using a **session-based conversational model**.
    - **Session Management**: Leveraged **Guava** for storing session histories, ensuring efficient state management.
-   - **Streaming Responses**: Implemented a **factory pattern** to support dynamic, streamed responses.
+   - **Streaming Responses**: Use Flux to support dynamic, streamed responses.
 
 3. **Sensitive Content Management with Chain of Responsibility**  
    A **chain of responsibility pattern** is used for managing content filtration through whitelist checks and sensitive word filtering.
