@@ -27,6 +27,7 @@ public class ChatService extends AbstractChatService {
     private final ChatClient chatClient_qwen3_8b;
     private final ChatClient chatClient_qwen3_14b;
     private final ChatClient chatClient_glm_4flash;
+    private final ChatClient chatClient_qwen3_235b;
     private final ChatClient chatClient_qwen3_max;
     private final ChatClient chatClient_deepseek_r1;
     private final ChatClient chatClient_deepseek_v3;
@@ -37,6 +38,7 @@ public class ChatService extends AbstractChatService {
             @Qualifier("chatClient_qwen3_8b") ChatClient chatClient_qwen3_8b,
             @Qualifier("chatClient_qwen3_14b") ChatClient chatClient_qwen3_14b,
             @Qualifier("chatClient_glm_4flash") ChatClient chatClient_glm_4flash,
+            @Qualifier("chatClient_qwen3_235b") ChatClient chatClient_qwen3_235b,
             @Qualifier("chatClient_qwen3_max") ChatClient chatClient_qwen3_max,
             @Qualifier("chatClient_deepseek_r1") ChatClient chatClient_deepseek_r1,
             @Qualifier("chatClient_deepseek_v3") ChatClient chatClient_deepseek_v3,
@@ -46,7 +48,8 @@ public class ChatService extends AbstractChatService {
         this.chatClient_qwen3_8b = chatClient_qwen3_8b;
         this.chatClient_qwen3_14b = chatClient_qwen3_14b;
         this.chatClient_glm_4flash = chatClient_glm_4flash;
-        this.chatClient_qwen3_max = chatClient_glm_4flash;
+        this.chatClient_qwen3_235b = chatClient_qwen3_235b;
+        this.chatClient_qwen3_max = chatClient_qwen3_max;
         this.chatClient_deepseek_r1 = chatClient_deepseek_r1;
         this.chatClient_deepseek_v3 = chatClient_deepseek_v3;
         this.logicFactory = logicFactory;
@@ -57,6 +60,7 @@ public class ChatService extends AbstractChatService {
         modelClientMap.put("qwen3:8b", chatClient_qwen3_8b);
         modelClientMap.put("qwen3:14b", chatClient_qwen3_14b);
         modelClientMap.put("glm:4flash", chatClient_glm_4flash);
+        modelClientMap.put("qwen3:235b", chatClient_qwen3_235b);
         modelClientMap.put("qwen3:max", chatClient_qwen3_max);
         modelClientMap.put("deepseek:r1", chatClient_deepseek_r1);
         modelClientMap.put("deepseek:v3", chatClient_deepseek_v3);
