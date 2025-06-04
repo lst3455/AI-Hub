@@ -27,7 +27,32 @@ services:
         max-file: "3"
     restart: always
 
-  # OpenAI 应用前端
+  agent-app:
+    image: linsitian/agent-back-app:1.0
+    container_name: agent-back-app
+    ports:
+      - "8092:8092"
+    environment:
+      - TZ=PRC
+      - SERVER_PORT=8092
+      - APP_CONFIG_API_VERSION=v0
+      - APP_CONFIG_CROSS_ORIGIN=*
+      - APP_CONFIG_LIMIT_COUNT=3
+      - APP_CONFIG_WHITE_LIST=ojbZUv18lbmriaTjcCWBYkOrSbHA
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=13860433455wabb!
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/chatbot?useUnicode=true&characterEncoding=utf8&autoReconnect=true&zeroDateTimeBehavior=convertToNull&serverTimezone=UTC&useSSL=false
+    volumes:
+      - ./log:/data/log
+    networks:
+      - my-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    restart: always
+
   chatbot-front-app:
     container_name: chatbot-front-app
     image: linsitian/chatbot-front-app:2.0
