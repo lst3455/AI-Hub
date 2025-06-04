@@ -18,7 +18,7 @@ where users can gain access to its AI capabilities through a lottery-based syste
 <div align="center"><img src="docs/readme/auth.png" style="zoom: 33%;" /></div>
 <div align="center"><img src="docs/readme/chat2.png" style="zoom: 33%;" /></div>
 <div align="center"><img src="docs/readme/chat1.png" style="zoom: 33%;" /></div>
-<div align="center"><img src="docs/readme/agent1.png" style="zoom: 33%;" /></div>
+<div align="center"><img src="docs/readme/agent2.png" style="zoom: 33%;" /></div>
 
 ### Key Features:
 
