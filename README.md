@@ -6,14 +6,12 @@ AI Hub is a versatile platform designed with two primary modules: [AI-Chatbot](h
 
 At present, AI Hub's services interface with the [LuckWhirl Platform](https://github.com/lst3455/LuckWhirl-platform), where users can gain access to its AI capabilities through a lottery-based system.
 
----
 
 <div align="center"><img src="docs/readme/auth.png" style="zoom: 33%;" /></div>
 <div align="center"><img src="docs/readme/chat2.png" style="zoom: 33%;" /></div>
 <div align="center"><img src="docs/readme/chat1.png" style="zoom: 33%;" /></div>
 <div align="center"><img src="docs/readme/agent1.png" style="zoom: 33%;" /></div>
 
----
 ### Key Features:
 
 1.  **Authentication and Token Management**  
@@ -66,6 +64,4 @@ At present, AI Hub's services interface with the [LuckWhirl Platform](https://gi
 - **Design Patterns and Architecture**:
    - DDD (Domain-Driven Design)
    - Factory Pattern, Strategy Pattern, Template Pattern, Composite Pattern
-
----
 
