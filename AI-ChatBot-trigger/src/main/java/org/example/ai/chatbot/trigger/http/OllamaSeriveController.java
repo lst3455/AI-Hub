@@ -7,6 +7,7 @@ import org.example.ai.chatbot.domain.auth.service.IAuthService;
 import org.example.ai.chatbot.domain.openai.model.aggregates.ChatProcessAggregate;
 import org.example.ai.chatbot.domain.openai.service.IChatService;
 import org.example.ai.chatbot.trigger.http.dto.ChatGPTRequestDTO;
+import org.example.ai.chatbot.trigger.http.dto.MessageEntity;
 import org.example.ai.chatbot.types.common.Constants;
 import org.example.ai.chatbot.types.exception.ChatGPTException;
 import org.springframework.ai.chat.messages.Message;
@@ -60,6 +61,13 @@ public class OllamaSeriveController {
             // 3. Get OpenID
             String openid = authService.openid(token);
             log.info("Processing streaming Q&A request, openid: {} Request model: {}", openid, request.getModel());
+
+            List<MessageEntity> messageEntities = request.getMessages();
+            // Avoid empty messageEntities
+            if (messageEntities.isEmpty()) messageEntities.add(MessageEntity.builder()
+                    .role("user")
+                    .content("Hi")
+                    .build());
 
             // 4. Convert DTO messages to Spring AI messages
             List<Message> aiMessages = request.getMessages().stream()
