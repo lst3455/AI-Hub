@@ -1,4 +1,4 @@
-## <div align="center">AI-Chatbot</div>
+# <div align="center">AI Hub</div>
 
 ###  <div align="center">[Try Here](http://linst-yyds.top:3000)</div>
 
