@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.ai.chat.messages.Message;
+import org.springframework.ai.ollama.api.OllamaOptions;
 
 import java.util.List;
 
@@ -19,9 +21,9 @@ public class ChatProcessAggregate {
     /** 验证信息 */
     private String openid;
     /** 默认模型 */
-    private String model = ChatGLMModel.GLM_3_5_TURBO.getCode();
+    private String model;
     /** 问题描述 */
-    private List<MessageEntity> messages;
+    private List<Message> messages;
 
     public boolean isWhiteList(String whiteListStr) {
         String[] whiteList = whiteListStr.split(Constants.SPLIT);

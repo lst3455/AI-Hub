@@ -8,7 +8,7 @@ import org.example.ai.chatbot.domain.auth.model.entity.AuthStateEntity;
 import org.example.ai.chatbot.domain.auth.model.valobj.AuthTypeVO;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 /**
  * @description Authentication service

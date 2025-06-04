@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 
 @Data
 @Builder
@@ -16,5 +18,6 @@ public class AuthStateEntity {
     private String info;
     private String openId;
     private String token;
+    private Date expireDate;
 
 }

@@ -1,5 +1,6 @@
 package org.example.ai.chatbot.domain.openai.service.rule.impl;
 
+import jakarta.annotation.Resource;
 import org.example.ai.chatbot.domain.openai.annotation.LogicStrategy;
 import org.example.ai.chatbot.domain.openai.model.aggregates.ChatProcessAggregate;
 import org.example.ai.chatbot.domain.openai.model.entity.RuleLogicEntity;
@@ -11,7 +12,6 @@ import org.example.ai.chatbot.domain.openai.service.rule.factory.DefaultLogicFac
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 
 
 @Slf4j

@@ -64,7 +64,7 @@ public abstract class AbstractAuthService implements IAuthService {
         }
         Map<String, Object> claims = new HashMap<>();
         claims.put("openId", authStateEntity.getOpenId());
-        String token = encode(authStateEntity.getOpenId(), 7 * 24 * 60 * 60 * 1000, claims);
+        String token = encode(authStateEntity, 7 * 24 * 60 * 60 * 1000, claims);
         authStateEntity.setToken(token);
 
         return authStateEntity;
@@ -89,12 +89,12 @@ public abstract class AbstractAuthService implements IAuthService {
      *    - iss: Issuer (typically a username or userId)
      *    - exp: Expiration time
      *
-     * @param issuer The issuer of the token, typically the username or user ID.
+     * @param authStateEntity The authStateEntity.
      * @param ttlMillis Token lifetime in milliseconds.
      * @param claims Additional claims to include in the token payload.
      * @return A compact JWT string.
      */
-    protected String encode(String issuer, long ttlMillis, Map<String, Object> claims) {
+    protected String encode(AuthStateEntity authStateEntity, long ttlMillis, Map<String, Object> claims) {
         if (claims == null) {
             claims = new HashMap<>();
         }
@@ -104,13 +104,14 @@ public abstract class AbstractAuthService implements IAuthService {
                 .setClaims(claims)                          // Payload section
                 .setId(UUID.randomUUID().toString())        // Unique identifier for the JWT
                 .setIssuedAt(new Date(nowMillis))           // Issued at timestamp
-                .setSubject(issuer)                         // Issuer of the token
+                .setSubject(authStateEntity.getOpenId())                         // Issuer of the token
                 .signWith(SignatureAlgorithm.HS256, base64EncodedSecretKey); // Signing algorithm and secret key
 
         if (ttlMillis >= 0) {
             long expMillis = nowMillis + ttlMillis;
             Date exp = new Date(expMillis);                 // Expiration timestamp
             builder.setExpiration(exp);
+            authStateEntity.setExpireDate(exp);
         }
         return builder.compact();
     }

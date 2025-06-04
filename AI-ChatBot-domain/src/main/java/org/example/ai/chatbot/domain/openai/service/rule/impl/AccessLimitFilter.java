@@ -2,6 +2,7 @@ package org.example.ai.chatbot.domain.openai.service.rule.impl;
 
 import com.alibaba.fastjson2.JSON;
 import com.google.common.cache.Cache;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.example.ai.chatbot.domain.openai.annotation.LogicStrategy;
 import org.example.ai.chatbot.domain.openai.model.aggregates.ChatProcessAggregate;
@@ -13,7 +14,6 @@ import org.example.ai.chatbot.domain.openai.service.rule.factory.DefaultLogicFac
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 
 @Slf4j
 @Component

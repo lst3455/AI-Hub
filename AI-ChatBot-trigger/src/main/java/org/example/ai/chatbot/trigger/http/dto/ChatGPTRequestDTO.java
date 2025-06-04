@@ -15,7 +15,7 @@ import java.util.List;
 public class ChatGPTRequestDTO {
 
     /** 默认模型 */
-    private String model = ChatGLMModel.GLM_3_5_TURBO.getCode();
+    private String model;
 
     /** 问题描述 */
     private List<MessageEntity> messages;

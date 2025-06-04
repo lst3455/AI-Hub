@@ -1,6 +1,7 @@
 package org.example.ai.chatbot.trigger.http;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.google.common.cache.Cache;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -11,7 +12,7 @@ import org.example.ai.chatbot.types.common.Constants;
 import org.example.ai.chatbot.types.model.Response;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 /**
  * This controller manages authentication operations, including user login via verification code
@@ -44,7 +45,7 @@ public class AuthController {
      * @return A Response object containing the authentication result, including a token if successful.
      */
     @RequestMapping(value = "login", method = RequestMethod.POST)
-    public Response<String> doLogin(@RequestParam String code, @RequestParam String openId) {
+    public Response<JSONObject> doLogin(@RequestParam("code") String code, @RequestParam("openId") String openId) {
         log.info("Authentication login check started, verification code: {}, openId:{}", code, openId);
         try {
             // Attempt to authenticate using the provided code
@@ -53,22 +54,26 @@ public class AuthController {
 
             // Intercept if authentication failed
             if (!AuthTypeVO.A0000.getCode().equals(authStateEntity.getCode())) {
-                return Response.<String>builder()
+                return Response.<JSONObject>builder()
                         .code(Constants.ResponseCode.TOKEN_ERROR.getCode())
                         .info(Constants.ResponseCode.TOKEN_ERROR.getInfo())
                         .build();
             }
 
+            JSONObject jsonData = new JSONObject();
+            jsonData.put("token", authStateEntity.getToken());
+            jsonData.put("expireDate", authStateEntity.getExpireDate());
+
             // Allow if authentication succeeded
-            return Response.<String>builder()
+            return Response.<JSONObject>builder()
                     .code(Constants.ResponseCode.SUCCESS.getCode())
                     .info(Constants.ResponseCode.SUCCESS.getInfo())
-                    .data(authStateEntity.getToken())
+                    .data(jsonData)
                     .build();
 
         } catch (Exception e) {
             log.error("Authentication login check failed, verification code: {}", code);
-            return Response.<String>builder()
+            return Response.<JSONObject>builder()
                     .code(Constants.ResponseCode.UN_ERROR.getCode())
                     .info(Constants.ResponseCode.UN_ERROR.getInfo())
                     .build();

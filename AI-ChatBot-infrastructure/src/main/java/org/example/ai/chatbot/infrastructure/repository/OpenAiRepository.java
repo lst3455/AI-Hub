@@ -1,17 +1,14 @@
 package org.example.ai.chatbot.infrastructure.repository;
 
 
-import cn.bugstack.chatglm.model.Model;
 import org.example.ai.chatbot.domain.openai.model.entity.UserAccountEntity;
 import org.example.ai.chatbot.domain.openai.model.valobj.UserAccountStatusVO;
 import org.example.ai.chatbot.domain.openai.repository.IOpenAiRepository;
 import org.example.ai.chatbot.infrastructure.dao.IUserAccountDao;
 import org.example.ai.chatbot.infrastructure.po.UserAccountPO;
-import org.example.ai.chatbot.types.common.Constants;
 import org.springframework.stereotype.Repository;
 
-import javax.annotation.Resource;
-import java.util.Map;
+import jakarta.annotation.Resource;
 
 
 @Repository
@@ -19,10 +16,6 @@ public class OpenAiRepository implements IOpenAiRepository {
 
     @Resource
     private IUserAccountDao userAccountDao;
-
-    @Resource
-    private Map<String, Model> modelMap;
-
 
     @Override
     public int subAccountQuota(String openid) {
@@ -49,15 +42,15 @@ public class OpenAiRepository implements IOpenAiRepository {
         userAccountPO.setOpenid(openid);
         userAccountPO.setStatus(0);
 
-        // get string type of model list
-        StringBuilder modelTypes = new StringBuilder();
-        for (String modelKey : modelMap.keySet()){
-            modelTypes.append(modelKey);
-            modelTypes.append(Constants.SPLIT);
-        }
-        modelTypes.deleteCharAt(modelTypes.length() - 1);
+//        // get string type of model list
+//        StringBuilder modelTypes = new StringBuilder();
+//        for (String modelKey : modelMap.keySet()){
+//            modelTypes.append(modelKey);
+//            modelTypes.append(Constants.SPLIT);
+//        }
+//        modelTypes.deleteCharAt(modelTypes.length() - 1);
 
-        userAccountPO.setModelTypes(modelTypes.toString());
+        userAccountPO.setModelTypes("qwen3:1.7b,qwen3:8b,qwen3:14b,glm:4flash,qwen3:235b,qwen3:plus,qwen3:max,deepseek:r1,deepseek:v3");
         userAccountPO.setTotalQuota(3);
         userAccountPO.setSurplusQuota(3);
 

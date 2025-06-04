@@ -29,10 +29,10 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
         <!-- chatgpt-sdk-java https://gitcode.net/KnowledgePlanet/chatgpt/chatgpt-sdk-java-->
-        <dependency>
-            <groupId>cn.bugstack</groupId>
-            <artifactId>chatglm-sdk-java</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>cn.bugstack</groupId>-->
+<!--            <artifactId>chatglm-sdk-java</artifactId>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.example</groupId>
             <artifactId>AI-ChatBot-types</artifactId>
@@ -44,10 +44,29 @@
             <version>1.0.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework.ai</groupId>
+            <artifactId>spring-ai-starter-model-ollama</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
         <finalName>AI-ChatBot-trigger</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-archetype-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>create-from-project</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
 
 </project>

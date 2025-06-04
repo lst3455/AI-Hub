@@ -2,4 +2,4 @@ spring:
   config:
     name: chatbot
   profiles:
-    active: dev
+    active: cloud

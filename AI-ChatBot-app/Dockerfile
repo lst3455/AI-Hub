@@ -1,13 +1,15 @@
-# 基础镜像
-FROM openjdk:8-jre-slim
-# 作者
-#MAINTAINER St-Lin
-# 配置
-ENV PARAMS=""
-# 时区
+# 基础镜像：使用 Java 17 JDK Slim 版本
+FROM openjdk:17-jdk-slim
+
+# 时区配置
 ENV TZ=Asia/Singapore
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-# 添加应用
+
+# 应用参数（可选）
+ENV PARAMS=""
+
+# 将编译好的 JAR 包添加到镜像中
 ADD target/AI-ChatBot-app.jar /AI-ChatBot-app.jar
-## 在镜像运行为容器后执行的命令
-ENTRYPOINT ["sh","-c","java -jar $JAVA_OPTS /AI-ChatBot-app.jar $PARAMS"]
+
+# 启动命令：使用 JAVA_OPTS 和 PARAMS 运行 JAR
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar /AI-ChatBot-app.jar $PARAMS"]

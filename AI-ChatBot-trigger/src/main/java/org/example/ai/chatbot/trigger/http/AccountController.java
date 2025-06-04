@@ -16,7 +16,7 @@ import org.example.ai.chatbot.types.exception.ChatGPTException;
 import org.example.ai.chatbot.types.model.Response;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.util.Map;
 
 
@@ -36,7 +36,8 @@ public class AccountController {
     private IAuthService authService;
 
     @RequestMapping(value = "query_account_quota", method = RequestMethod.POST)
-    public Response<AccountQuotaResponseDTO> queryAccountQuota(@RequestHeader("Authorization") String token) {
+    public Response<AccountQuotaResponseDTO> queryAccountQuota(@RequestHeader("Authorization") String token, @RequestHeader("OpenId") String openId) {
+        log.info("Query account quota, openId: {}", openId);
         try {
             // 1. Token 校验
             boolean success = authService.checkToken(token);
@@ -60,7 +61,7 @@ public class AccountController {
                     .info(Constants.ResponseCode.SUCCESS.getInfo())
                     .build();
         } catch (Exception e) {
-            log.error("查询账户额度失败", e);
+            log.error("Query account quota fail, openId: {}", openId, e);
             return Response.<AccountQuotaResponseDTO>builder()
                     .code(Constants.ResponseCode.UN_ERROR.getCode())
                     .info(Constants.ResponseCode.UN_ERROR.getInfo())

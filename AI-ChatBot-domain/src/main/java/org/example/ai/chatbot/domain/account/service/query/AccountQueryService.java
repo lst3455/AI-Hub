@@ -6,7 +6,7 @@ import org.example.ai.chatbot.domain.account.model.valobj.AccountQuotaVO;
 import org.example.ai.chatbot.domain.account.service.IAccountQueryService;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 
 @Service
