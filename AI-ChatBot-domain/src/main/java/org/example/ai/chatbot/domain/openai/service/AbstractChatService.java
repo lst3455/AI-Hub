@@ -81,6 +81,55 @@ public abstract class AbstractChatService implements IChatService {
         }
     }
 
+    @Override
+    public Flux<String> generateTitle(ChatProcessAggregate chatProcessAggregate) {
+        try {
+            // 1. Get user account
+            UserAccountEntity userAccountEntity = iOpenAiRepository.queryUserAccount(chatProcessAggregate.getOpenid());
+            // If account does not exist, create a new user account
+            if (userAccountEntity == null) {
+                iOpenAiRepository.insertUserAccount(chatProcessAggregate.getOpenid());
+                userAccountEntity = iOpenAiRepository.queryUserAccount(chatProcessAggregate.getOpenid());
+            }
+
+            // 2. Apply rule filters
+            // First, check the account status
+            RuleLogicEntity<ChatProcessAggregate> ruleLogicEntity = this.doCheckLogic(chatProcessAggregate,
+                    userAccountEntity,
+                    userAccountEntity != null ? DefaultLogicFactory.LogicModel.ACCOUNT_STATUS.getCode() : DefaultLogicFactory.LogicModel.NULL.getCode()
+            );
+
+            // If the account is unavailable, return error message as Flux
+            if (!LogicCheckTypeVO.SUCCESS.equals(ruleLogicEntity.getType())) {
+                return Flux.just(formatSseMessage("error", Constants.ResponseCode.USER_BANNED.getCode(),
+                        Constants.ResponseCode.USER_BANNED.getInfo()));
+            }
+
+            // If available, check other filter
+            ruleLogicEntity = this.doCheckLogic(chatProcessAggregate,
+                    userAccountEntity,
+                    userAccountEntity != null ? DefaultLogicFactory.LogicModel.MODEL_TYPE.getCode() : DefaultLogicFactory.LogicModel.NULL.getCode(),
+                    userAccountEntity != null ? DefaultLogicFactory.LogicModel.USER_QUOTA_NO_SUBTRACT.getCode() : DefaultLogicFactory.LogicModel.NULL.getCode(),
+                    DefaultLogicFactory.LogicModel.SENSITIVE_WORD.getCode()
+            );
+
+            // If any rule fails, return error message as Flux
+            if (!LogicCheckTypeVO.SUCCESS.equals(ruleLogicEntity.getType())) {
+                return Flux.just(formatSseMessage("error", Constants.ResponseCode.QUOTA_OR_MODEL_TYPE_UNSUPPORTED.getCode(),
+                        Constants.ResponseCode.QUOTA_OR_MODEL_TYPE_UNSUPPORTED.getInfo()));
+            }
+
+
+            // 3. Process response and transform to SSE format
+            return doTitleResponse(chatProcessAggregate)
+                    .map(content -> formatSseMessage("message", Constants.ResponseCode.SUCCESS.getCode(), content));
+        } catch (Exception e) {
+            log.error("Unexpected error in generateStream", e);
+            return Flux.just(formatSseMessage("error", Constants.ResponseCode.UN_ERROR.getCode(),
+                    Constants.ResponseCode.UN_ERROR.getInfo()));
+        }
+    }
+
     /**
      * Format response as Server-Sent Event with proper structure
      * @param event The event type (message, error, etc.)
@@ -121,5 +170,6 @@ public abstract class AbstractChatService implements IChatService {
     protected abstract RuleLogicEntity<ChatProcessAggregate> doCheckLogic(ChatProcessAggregate chatProcess, UserAccountEntity userAccountEntity, String... logics) throws Exception;
 
     protected abstract Flux<String> doMessageResponse(ChatProcessAggregate chatProcessAggregate) throws Exception;
+    protected abstract Flux<String> doTitleResponse(ChatProcessAggregate chatProcessAggregate) throws Exception;
 
 }

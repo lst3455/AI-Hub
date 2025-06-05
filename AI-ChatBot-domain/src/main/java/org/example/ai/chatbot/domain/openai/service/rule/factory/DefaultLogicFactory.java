@@ -40,6 +40,7 @@ public class DefaultLogicFactory {
         ACCESS_LIMIT("ACCESS_LIMIT", "访问次数过滤"),
         SENSITIVE_WORD("SENSITIVE_WORD", "敏感词过滤"),
         USER_QUOTA("USER_QUOTA", "用户额度过滤"),
+        USER_QUOTA_NO_SUBTRACT("USER_QUOTA_NO_SUBTRACT", "用户额度确认"),
         MODEL_TYPE("MODEL_TYPE", "模型可用范围过滤"),
         ACCOUNT_STATUS("ACCOUNT_STATUS", "账户状态过滤"),
         ;

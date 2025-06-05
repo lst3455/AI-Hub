@@ -9,4 +9,6 @@ public interface IChatService {
 
     Flux<String> generateStream(ChatProcessAggregate chatProcessAggregate);
 
+    Flux<String> generateTitle(ChatProcessAggregate chatProcessAggregate);
+
 }
