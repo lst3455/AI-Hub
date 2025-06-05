@@ -35,6 +35,7 @@ public class ChatService extends AbstractChatService {
             @Qualifier("chatClient_qwen3_max") ChatClient chatClient_qwen3_max,
             @Qualifier("chatClient_deepseek_r1") ChatClient chatClient_deepseek_r1,
             @Qualifier("chatClient_deepseek_v3") ChatClient chatClient_deepseek_v3,
+            @Qualifier("chatClient_gemini_2_5flash") ChatClient chatClient_gemini_2_5flash,
             DefaultLogicFactory logicFactory
     ) {
         this.logicFactory = logicFactory;
@@ -50,6 +51,7 @@ public class ChatService extends AbstractChatService {
         modelClientMap.put("qwen3:max", chatClient_qwen3_max);
         modelClientMap.put("deepseek:r1", chatClient_deepseek_r1);
         modelClientMap.put("deepseek:v3", chatClient_deepseek_v3);
+        modelClientMap.put("gemini:2.5flash", chatClient_gemini_2_5flash);
     }
 
 

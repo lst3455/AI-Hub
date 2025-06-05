@@ -50,7 +50,7 @@ public class OpenAiRepository implements IOpenAiRepository {
 //        }
 //        modelTypes.deleteCharAt(modelTypes.length() - 1);
 
-        userAccountPO.setModelTypes("qwen3:1.7b,qwen3:8b,qwen3:14b,glm:4flash,qwen3:235b,qwen3:plus,qwen3:max,deepseek:r1,deepseek:v3");
+        userAccountPO.setModelTypes("qwen3:1.7b,qwen3:8b,qwen3:14b,glm:4flash,qwen3:235b,qwen3:plus,qwen3:max,deepseek:r1,deepseek:v3,gemini:2.5flash");
         userAccountPO.setTotalQuota(3);
         userAccountPO.setSurplusQuota(3);
 
