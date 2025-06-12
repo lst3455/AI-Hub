@@ -26,10 +26,8 @@ public class ChatService extends AbstractChatService {
     private final Map<String, ChatClient> modelClientMap;
 
     public ChatService(
-            @Qualifier("chatClient_qwen3_1_7b") ChatClient chatClient_qwen3_1_7b,
-            @Qualifier("chatClient_qwen3_8b") ChatClient chatClient_qwen3_8b,
-            @Qualifier("chatClient_qwen3_14b") ChatClient chatClient_qwen3_14b,
             @Qualifier("chatClient_glm_4flash") ChatClient chatClient_glm_4flash,
+            @Qualifier("chatClient_glm_z1flash") ChatClient chatClient_glm_z1flash,
             @Qualifier("chatClient_qwen3_235b") ChatClient chatClient_qwen3_235b,
             @Qualifier("chatClient_qwen3_plus") ChatClient chatClient_qwen3_plus,
             @Qualifier("chatClient_qwen3_max") ChatClient chatClient_qwen3_max,
@@ -42,10 +40,8 @@ public class ChatService extends AbstractChatService {
 
         // Initialize the model-to-client mapping
         this.modelClientMap = new HashMap<>();
-        modelClientMap.put("qwen3:1.7b", chatClient_qwen3_1_7b);
-        modelClientMap.put("qwen3:8b", chatClient_qwen3_8b);
-        modelClientMap.put("qwen3:14b", chatClient_qwen3_14b);
         modelClientMap.put("glm:4flash", chatClient_glm_4flash);
+        modelClientMap.put("glm:z1flash", chatClient_glm_z1flash);
         modelClientMap.put("qwen3:235b", chatClient_qwen3_235b);
         modelClientMap.put("qwen3:plus", chatClient_qwen3_plus);
         modelClientMap.put("qwen3:max", chatClient_qwen3_max);
