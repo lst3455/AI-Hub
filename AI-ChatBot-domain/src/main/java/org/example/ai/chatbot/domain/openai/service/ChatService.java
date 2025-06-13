@@ -105,7 +105,7 @@ public class ChatService extends AbstractChatService {
     @Override
     protected Flux<String> doTitleResponse(ChatProcessAggregate chatProcess) throws Exception {
         // Select correct chatClient based on model
-        ChatClient selectedChatClient = getClientForModel(chatProcess.getModel());
+        ChatClient selectedChatClient = getClientForModel("glm:4flash");
 
         return Flux.defer(() -> {
             try {

@@ -9,9 +9,11 @@ import org.example.ai.chatbot.domain.openai.model.valobj.LogicCheckTypeVO;
 import org.example.ai.chatbot.domain.openai.repository.IOpenAiRepository;
 import org.example.ai.chatbot.domain.openai.service.rule.factory.DefaultLogicFactory;
 import org.example.ai.chatbot.domain.rebate.service.IRebateService;
+import org.example.ai.chatbot.domain.utils.Utils;
 import org.example.ai.chatbot.types.common.Constants;
 
 import lombok.extern.slf4j.Slf4j;
+import org.example.ai.chatbot.types.exception.AiServiceException;
 import reactor.core.publisher.Flux;
 
 @Slf4j
@@ -45,8 +47,7 @@ public abstract class AbstractChatService implements IChatService {
 
             // If the account is unavailable, return error message as Flux
             if (!LogicCheckTypeVO.SUCCESS.equals(ruleLogicEntity.getType())) {
-                return Flux.just(formatSseMessage("error", Constants.ResponseCode.USER_BANNED.getCode(),
-                        Constants.ResponseCode.USER_BANNED.getInfo()));
+                throw new AiServiceException(Constants.ResponseCode.USER_BANNED.getCode(),Constants.ResponseCode.USER_BANNED.getInfo());
             }
 
             // If available, check other filter
@@ -59,8 +60,7 @@ public abstract class AbstractChatService implements IChatService {
 
             // If any rule fails, return error message as Flux
             if (!LogicCheckTypeVO.SUCCESS.equals(ruleLogicEntity.getType())) {
-                return Flux.just(formatSseMessage("error", Constants.ResponseCode.QUOTA_OR_MODEL_TYPE_UNSUPPORTED.getCode(),
-                        Constants.ResponseCode.QUOTA_OR_MODEL_TYPE_UNSUPPORTED.getInfo()));
+                throw new AiServiceException(Constants.ResponseCode.QUOTA_OR_MODEL_TYPE_UNSUPPORTED.getCode(),Constants.ResponseCode.QUOTA_OR_MODEL_TYPE_UNSUPPORTED.getInfo());
             }
 
             // process rebate for each chat session
@@ -73,11 +73,10 @@ public abstract class AbstractChatService implements IChatService {
 
             // 3. Process response and transform to SSE format
             return doMessageResponse(chatProcessAggregate)
-                    .map(content -> formatSseMessage("message", Constants.ResponseCode.SUCCESS.getCode(), content));
+                    .map(content -> Utils.formatSseMessage("message", Constants.ResponseCode.SUCCESS.getCode(), content));
         } catch (Exception e) {
             log.error("Unexpected error in generateStream", e);
-            return Flux.just(formatSseMessage("error", Constants.ResponseCode.UN_ERROR.getCode(),
-                    Constants.ResponseCode.UN_ERROR.getInfo()));
+            throw new AiServiceException(Constants.ResponseCode.UN_ERROR.getCode(),Constants.ResponseCode.UN_ERROR.getInfo());
         }
     }
 
@@ -101,8 +100,7 @@ public abstract class AbstractChatService implements IChatService {
 
             // If the account is unavailable, return error message as Flux
             if (!LogicCheckTypeVO.SUCCESS.equals(ruleLogicEntity.getType())) {
-                return Flux.just(formatSseMessage("error", Constants.ResponseCode.USER_BANNED.getCode(),
-                        Constants.ResponseCode.USER_BANNED.getInfo()));
+                throw new AiServiceException(Constants.ResponseCode.USER_BANNED.getCode(),Constants.ResponseCode.USER_BANNED.getInfo());
             }
 
             // If available, check other filter
@@ -115,55 +113,16 @@ public abstract class AbstractChatService implements IChatService {
 
             // If any rule fails, return error message as Flux
             if (!LogicCheckTypeVO.SUCCESS.equals(ruleLogicEntity.getType())) {
-                return Flux.just(formatSseMessage("error", Constants.ResponseCode.QUOTA_OR_MODEL_TYPE_UNSUPPORTED.getCode(),
-                        Constants.ResponseCode.QUOTA_OR_MODEL_TYPE_UNSUPPORTED.getInfo()));
+                throw new AiServiceException(Constants.ResponseCode.QUOTA_OR_MODEL_TYPE_UNSUPPORTED.getCode(),Constants.ResponseCode.QUOTA_OR_MODEL_TYPE_UNSUPPORTED.getInfo());
             }
 
 
             // 3. Process response and transform to SSE format
             return doTitleResponse(chatProcessAggregate)
-                    .map(content -> formatSseMessage("message", Constants.ResponseCode.SUCCESS.getCode(), content));
+                    .map(content -> Utils.formatSseMessage("message", Constants.ResponseCode.SUCCESS.getCode(), content));
         } catch (Exception e) {
             log.error("Unexpected error in generateStream", e);
-            return Flux.just(formatSseMessage("error", Constants.ResponseCode.UN_ERROR.getCode(),
-                    Constants.ResponseCode.UN_ERROR.getInfo()));
-        }
-    }
-
-    /**
-     * Format response as Server-Sent Event with proper structure
-     * @param event The event type (message, error, etc.)
-     * @param code Status code
-     * @param content Message content
-     * @return Formatted SSE message
-     */
-    private String formatSseMessage(String event, String code, String content) {
-        String id = System.currentTimeMillis() + "-" + RandomStringUtils.randomAlphanumeric(8);
-        StringBuilder sb = new StringBuilder();
-        sb.append("id: ").append(id).append("\n");
-        sb.append("event: ").append(event).append("\n");
-        sb.append("data: {");
-        sb.append("\"id\":\"").append(id).append("\",");
-        sb.append("\"code\":\"").append(code).append("\",");
-        sb.append("\"content\":").append(jsonEscape(content));
-        sb.append("}\n\n");
-        return sb.toString();
-    }
-
-    /**
-     * Properly escape content for JSON inclusion
-     */
-    private String jsonEscape(String content) {
-        if (content == null) return "null";
-
-        // If content already looks like JSON, don't wrap it in quotes
-        if (content.trim().startsWith("{") && content.trim().endsWith("}")) {
-            return content;
-        } else {
-            // Escape quotes and wrap in quotes
-            return "\"" + content.replace("\"", "\\\"")
-                    .replace("\n", "\\n")
-                    .replace("\r", "\\r") + "\"";
+            throw new AiServiceException(Constants.ResponseCode.UN_ERROR.getCode(),Constants.ResponseCode.UN_ERROR.getInfo());
         }
     }
 
