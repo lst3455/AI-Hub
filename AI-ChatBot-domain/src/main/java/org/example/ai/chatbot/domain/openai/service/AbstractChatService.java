@@ -16,6 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.ai.chatbot.types.exception.AiServiceException;
 import reactor.core.publisher.Flux;
 
+import java.util.concurrent.ExecutionException;
+
 @Slf4j
 public abstract class AbstractChatService implements IChatService {
 
@@ -28,60 +30,55 @@ public abstract class AbstractChatService implements IChatService {
 
 
     @Override
-    public Flux<String> generateStream(ChatProcessAggregate chatProcessAggregate) {
-        try {
-            // 1. Get user account
-            UserAccountEntity userAccountEntity = iOpenAiRepository.queryUserAccount(chatProcessAggregate.getOpenid());
-            // If account does not exist, create a new user account
-            if (userAccountEntity == null) {
-                iOpenAiRepository.insertUserAccount(chatProcessAggregate.getOpenid());
-                userAccountEntity = iOpenAiRepository.queryUserAccount(chatProcessAggregate.getOpenid());
-            }
-
-            // 2. Apply rule filters
-            // First, check the account status
-            RuleLogicEntity<ChatProcessAggregate> ruleLogicEntity = this.doCheckLogic(chatProcessAggregate,
-                    userAccountEntity,
-                    userAccountEntity != null ? DefaultLogicFactory.LogicModel.ACCOUNT_STATUS.getCode() : DefaultLogicFactory.LogicModel.NULL.getCode()
-            );
-
-            // If the account is unavailable, return error message as Flux
-            if (!LogicCheckTypeVO.SUCCESS.equals(ruleLogicEntity.getType())) {
-                throw new AiServiceException(Constants.ResponseCode.USER_BANNED.getCode(),Constants.ResponseCode.USER_BANNED.getInfo());
-            }
-
-            // If available, check other filter
-            ruleLogicEntity = this.doCheckLogic(chatProcessAggregate,
-                    userAccountEntity,
-                    userAccountEntity != null ? DefaultLogicFactory.LogicModel.MODEL_TYPE.getCode() : DefaultLogicFactory.LogicModel.NULL.getCode(),
-                    userAccountEntity != null ? DefaultLogicFactory.LogicModel.USER_QUOTA.getCode() : DefaultLogicFactory.LogicModel.NULL.getCode(),
-                    DefaultLogicFactory.LogicModel.SENSITIVE_WORD.getCode()
-            );
-
-            // If any rule fails, return error message as Flux
-            if (!LogicCheckTypeVO.SUCCESS.equals(ruleLogicEntity.getType())) {
-                throw new AiServiceException(Constants.ResponseCode.QUOTA_OR_MODEL_TYPE_UNSUPPORTED.getCode(),Constants.ResponseCode.QUOTA_OR_MODEL_TYPE_UNSUPPORTED.getInfo());
-            }
-
-            // process rebate for each chat session
-            try {
-                rebateService.rebateGoods(chatProcessAggregate.getOpenid(), RandomStringUtils.randomNumeric(11));
-            } catch (Exception e) {
-                log.error("point rebate fail, openId:{}", chatProcessAggregate.getOpenid(), e);
-                // Continue execution even if rebate fails
-            }
-
-            // 3. Process response and transform to SSE format
-            return doMessageResponse(chatProcessAggregate)
-                    .map(content -> Utils.formatSseMessage("message", Constants.ResponseCode.SUCCESS.getCode(), content));
-        } catch (Exception e) {
-            log.error("Unexpected error in generateStream", e);
-            throw new AiServiceException(Constants.ResponseCode.UN_ERROR.getCode(),Constants.ResponseCode.UN_ERROR.getInfo());
+    public Flux<String> generateStream(ChatProcessAggregate chatProcessAggregate) throws AiServiceException, ExecutionException {
+        // 1. Get user account
+        UserAccountEntity userAccountEntity = iOpenAiRepository.queryUserAccount(chatProcessAggregate.getOpenid());
+        // If account does not exist, create a new user account
+        if (userAccountEntity == null) {
+            iOpenAiRepository.insertUserAccount(chatProcessAggregate.getOpenid());
+            userAccountEntity = iOpenAiRepository.queryUserAccount(chatProcessAggregate.getOpenid());
         }
+
+        // 2. Apply rule filters
+        // First, check the account status
+        RuleLogicEntity<ChatProcessAggregate> ruleLogicEntity = this.doCheckLogic(chatProcessAggregate,
+                userAccountEntity,
+                userAccountEntity != null ? DefaultLogicFactory.LogicModel.ACCOUNT_STATUS.getCode() : DefaultLogicFactory.LogicModel.NULL.getCode()
+        );
+
+        // If the account is unavailable, return error message as Flux
+        if (!LogicCheckTypeVO.SUCCESS.equals(ruleLogicEntity.getType())) {
+            throw new AiServiceException(Constants.ResponseCode.USER_BANNED.getCode(),Constants.ResponseCode.USER_BANNED.getInfo());
+        }
+
+        // If available, check other filter
+        ruleLogicEntity = this.doCheckLogic(chatProcessAggregate,
+                userAccountEntity,
+                userAccountEntity != null ? DefaultLogicFactory.LogicModel.MODEL_TYPE.getCode() : DefaultLogicFactory.LogicModel.NULL.getCode(),
+                userAccountEntity != null ? DefaultLogicFactory.LogicModel.USER_QUOTA.getCode() : DefaultLogicFactory.LogicModel.NULL.getCode(),
+                DefaultLogicFactory.LogicModel.SENSITIVE_WORD.getCode()
+        );
+
+        // If any rule fails, return error message as Flux
+        if (!LogicCheckTypeVO.SUCCESS.equals(ruleLogicEntity.getType())) {
+            throw new AiServiceException(Constants.ResponseCode.QUOTA_OR_MODEL_TYPE_UNSUPPORTED.getCode(),Constants.ResponseCode.QUOTA_OR_MODEL_TYPE_UNSUPPORTED.getInfo());
+        }
+
+        // process rebate for each chat session
+        try {
+            rebateService.rebateGoods(chatProcessAggregate.getOpenid(), RandomStringUtils.randomNumeric(11));
+        } catch (Exception e) {
+            log.error("point rebate fail, openId:{}", chatProcessAggregate.getOpenid(), e);
+            // Continue execution even if rebate fails
+        }
+
+        // 3. Process response and transform to SSE format
+        return doMessageResponse(chatProcessAggregate)
+                .map(content -> Utils.formatSseMessage("message", Constants.ResponseCode.SUCCESS.getCode(), content));
     }
 
     @Override
-    public Flux<String> generateTitle(ChatProcessAggregate chatProcessAggregate) {
+    public Flux<String> generateTitle(ChatProcessAggregate chatProcessAggregate) throws AiServiceException, ExecutionException {
         try {
             // 1. Get user account
             UserAccountEntity userAccountEntity = iOpenAiRepository.queryUserAccount(chatProcessAggregate.getOpenid());
@@ -126,9 +123,9 @@ public abstract class AbstractChatService implements IChatService {
         }
     }
 
-    protected abstract RuleLogicEntity<ChatProcessAggregate> doCheckLogic(ChatProcessAggregate chatProcess, UserAccountEntity userAccountEntity, String... logics) throws Exception;
+    protected abstract RuleLogicEntity<ChatProcessAggregate> doCheckLogic(ChatProcessAggregate chatProcess, UserAccountEntity userAccountEntity, String... logics) throws ExecutionException;
 
-    protected abstract Flux<String> doMessageResponse(ChatProcessAggregate chatProcessAggregate) throws Exception;
-    protected abstract Flux<String> doTitleResponse(ChatProcessAggregate chatProcessAggregate) throws Exception;
+    protected abstract Flux<String> doMessageResponse(ChatProcessAggregate chatProcessAggregate) throws AiServiceException;
+    protected abstract Flux<String> doTitleResponse(ChatProcessAggregate chatProcessAggregate) throws AiServiceException;
 
 }

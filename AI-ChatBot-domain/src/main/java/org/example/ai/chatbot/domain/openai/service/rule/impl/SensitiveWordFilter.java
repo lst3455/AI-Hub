@@ -35,7 +35,7 @@ public class SensitiveWordFilter implements ILogicFilter<UserAccountEntity> {
     @Override
     public RuleLogicEntity<ChatProcessAggregate> filter(
             ChatProcessAggregate chatProcess,
-            UserAccountEntity userAccountEntity) throws Exception {
+            UserAccountEntity userAccountEntity) {
 
         log.info("rule engine - sensitive - start, chatProcess:{}", JSON.toJSONString(chatProcess));
 

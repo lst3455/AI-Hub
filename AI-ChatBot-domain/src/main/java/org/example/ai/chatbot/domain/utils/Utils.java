@@ -24,6 +24,24 @@ public class Utils {
     }
 
     /**
+     * Format response as Server-Sent Event with proper structure
+     * @param event The event type (message, error, etc.)
+     * @param content Message content
+     * @return Formatted SSE message
+     */
+    public static String formatSseMessage(String event, String content) {
+        String id = System.currentTimeMillis() + "-" + RandomStringUtils.randomAlphanumeric(8);
+        StringBuilder sb = new StringBuilder();
+        sb.append("id: ").append(id).append("\n");
+        sb.append("event: ").append(event).append("\n");
+        sb.append("data: {");
+        sb.append("\"id\":\"").append(id).append("\",");
+        sb.append("\"content\":").append(jsonEscape(content));
+        sb.append("}\n\n");
+        return sb.toString();
+    }
+
+    /**
      * Properly escape content for JSON inclusion
      */
     public static String jsonEscape(String content) {

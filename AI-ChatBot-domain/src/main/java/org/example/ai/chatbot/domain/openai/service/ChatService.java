@@ -8,6 +8,7 @@ import org.example.ai.chatbot.domain.openai.model.valobj.LogicCheckTypeVO;
 import org.example.ai.chatbot.domain.openai.service.rule.ILogicFilter;
 import org.example.ai.chatbot.domain.openai.service.rule.factory.DefaultLogicFactory;
 import org.example.ai.chatbot.types.common.Constants;
+import org.example.ai.chatbot.types.exception.AiServiceException;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.SystemMessage;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 
 @Service
 @Slf4j
@@ -56,7 +58,7 @@ public class ChatService extends AbstractChatService {
             ChatProcessAggregate chatProcess,
             UserAccountEntity userAccountEntity,
             String... logics
-    ) throws Exception {
+    ) throws ExecutionException {
         Map<String, ILogicFilter<UserAccountEntity>> filters = logicFactory.openLogicFilter();
         RuleLogicEntity<ChatProcessAggregate> entity = null;
         for (String code : logics) {
@@ -97,13 +99,13 @@ public class ChatService extends AbstractChatService {
                         .onErrorResume(e -> Flux.just("Error: " + e.getMessage()));
             }
             catch (Exception e) {
-                return Flux.just(Constants.ResponseCode.UN_ERROR.getInfo());
+                throw new AiServiceException(Constants.ResponseCode.UN_ERROR.getCode(),Constants.ResponseCode.UN_ERROR.getInfo());
             }
         }).switchIfEmpty(Flux.just("No response generated"));
     }
 
     @Override
-    protected Flux<String> doTitleResponse(ChatProcessAggregate chatProcess) throws Exception {
+    protected Flux<String> doTitleResponse(ChatProcessAggregate chatProcess){
         // Select correct chatClient based on model
         ChatClient selectedChatClient = getClientForModel("glm:4flash");
 
@@ -126,7 +128,7 @@ public class ChatService extends AbstractChatService {
                         .onErrorResume(e -> Flux.just("Error: " + e.getMessage()));
             }
             catch (Exception e) {
-                return Flux.just(Constants.ResponseCode.UN_ERROR.getInfo());
+                throw new AiServiceException(Constants.ResponseCode.UN_ERROR.getCode(),Constants.ResponseCode.UN_ERROR.getInfo());
             }
         }).switchIfEmpty(Flux.just("No response generated"));
     }

@@ -14,6 +14,8 @@ import org.example.ai.chatbot.domain.openai.service.rule.factory.DefaultLogicFac
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.concurrent.ExecutionException;
+
 
 @Slf4j
 @Component
@@ -28,7 +30,7 @@ public class AccessLimitFilter implements ILogicFilter<UserAccountEntity> {
     private Cache<String, Integer> visitCache;
 
     @Override
-    public RuleLogicEntity<ChatProcessAggregate> filter(ChatProcessAggregate chatProcess, UserAccountEntity userAccountEntity) throws Exception {
+    public RuleLogicEntity<ChatProcessAggregate> filter(ChatProcessAggregate chatProcess, UserAccountEntity userAccountEntity) throws ExecutionException {
         log.info("rule engine - accessLimit - start, chatProcess:{}", JSON.toJSONString(chatProcess));
 
         // 1. Whitelist users are granted direct access

@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 public class UserQuotaWithoutSubtractFilter implements ILogicFilter<UserAccountEntity> {
 
     @Override
-    public RuleLogicEntity<ChatProcessAggregate> filter(ChatProcessAggregate chatProcess, UserAccountEntity userAccountEntity) throws Exception {
+    public RuleLogicEntity<ChatProcessAggregate> filter(ChatProcessAggregate chatProcess, UserAccountEntity userAccountEntity) {
         if (userAccountEntity.getSurplusQuota() > 0) {
             return RuleLogicEntity.<ChatProcessAggregate>builder()
                     .type(LogicCheckTypeVO.SUCCESS).data(chatProcess).build();

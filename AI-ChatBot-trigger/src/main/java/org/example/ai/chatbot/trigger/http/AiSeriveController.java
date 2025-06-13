@@ -22,6 +22,7 @@ import jakarta.annotation.Resource;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 /**
@@ -111,6 +112,9 @@ public class AiSeriveController {
         } catch (AiServiceException e) {
             log.error("AI service error, request: {} encountered an exception", request, e);
             return Flux.just(Utils.formatSseMessage("error", e.getCode(), e.getMessage()));
+        } catch (ExecutionException e) {
+            log.error("Cache access error, request: {} encountered an exception", request, e);
+            return Flux.just(Utils.formatSseMessage("error", e.getMessage()));
         } catch (Exception e) {
             log.error("General generate failed, request: {} encountered an exception", request, e);
             return Flux.just(Utils.formatSseMessage("error", Constants.ResponseCode.UN_ERROR.getCode(),
@@ -189,6 +193,9 @@ public class AiSeriveController {
         } catch (AiServiceException e) {
             log.error("AI service error, request: {} encountered an exception", request, e);
             return Flux.just(Utils.formatSseMessage("error", e.getCode(), e.getMessage()));
+        } catch (ExecutionException e) {
+            log.error("Cache access error, request: {} encountered an exception", request, e);
+            return Flux.just(Utils.formatSseMessage("error", e.getMessage()));
         } catch (Exception e) {
             log.error("Generate title failed, request: {} encountered an exception", request, e);
             return Flux.just(Utils.formatSseMessage("error", Constants.ResponseCode.UN_ERROR.getCode(),

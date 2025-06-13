@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 public class AccountStatusFilter implements ILogicFilter<UserAccountEntity> {
 
     @Override
-    public RuleLogicEntity<ChatProcessAggregate> filter(ChatProcessAggregate chatProcess, UserAccountEntity userAccountEntity) throws Exception {
+    public RuleLogicEntity<ChatProcessAggregate> filter(ChatProcessAggregate chatProcess, UserAccountEntity userAccountEntity){
         // Account is available, allow access
         if (UserAccountStatusVO.AVAILABLE.equals(userAccountEntity.getUserAccountStatusVO())) {
             return RuleLogicEntity.<ChatProcessAggregate>builder()

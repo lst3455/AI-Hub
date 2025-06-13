@@ -23,7 +23,7 @@ public class UserQuotaFilter implements ILogicFilter<UserAccountEntity> {
     private IOpenAiRepository openAiRepository;
 
     @Override
-    public RuleLogicEntity<ChatProcessAggregate> filter(ChatProcessAggregate chatProcess, UserAccountEntity userAccountEntity) throws Exception {
+    public RuleLogicEntity<ChatProcessAggregate> filter(ChatProcessAggregate chatProcess, UserAccountEntity userAccountEntity) {
         if (userAccountEntity.getSurplusQuota() > 0) {
             // Deduct account quota; since it's personal account data with no resource competition, using a database directly is fine.
             // For efficiency, it can also be optimized with Redis for quota deduction.

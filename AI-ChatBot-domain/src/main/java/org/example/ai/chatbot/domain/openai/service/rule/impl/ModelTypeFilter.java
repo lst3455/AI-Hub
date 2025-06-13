@@ -20,7 +20,7 @@ import java.util.List;
 public class ModelTypeFilter implements ILogicFilter<UserAccountEntity> {
 
     @Override
-    public RuleLogicEntity<ChatProcessAggregate> filter(ChatProcessAggregate chatProcess, UserAccountEntity userAccountEntity) throws Exception {
+    public RuleLogicEntity<ChatProcessAggregate> filter(ChatProcessAggregate chatProcess, UserAccountEntity userAccountEntity) {
         // 1. List of models available to the user
         List<String> allowModelTypeList = userAccountEntity.getAllowModelTypeList();
         String modelType = chatProcess.getModel(); // todo update model check logic
