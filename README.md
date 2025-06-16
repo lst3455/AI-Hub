@@ -1,6 +1,6 @@
 # <div align="center">AI Hub</div>
 
-### <div align="center">[Try Here](http://linst-yyds.top:3000)</div>
+### <div align="center">[Try Here](http://chatbot.linst-yyds.top/)</div>
 
 AI Hub is a versatile platform designed with two primary modules: [AI-Chatbot](https://github.com/lst3455/AI-ChatBot)
 and [AI-Agent](https://github.com/lst3455/AI-Agent). These distinct systems leverage the unique characteristics of
